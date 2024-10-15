@@ -11,10 +11,12 @@ namespace TeachHub.Controllers
     public class EnrollmentsController : Controller
     {
         private readonly TeachHubContext _context;
+        private readonly ILogger<CoursesController> _logger; // Add logger
 
-        public EnrollmentsController(TeachHubContext context)
+        public EnrollmentsController(TeachHubContext context,ILogger<CoursesController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: Enrollments
@@ -39,7 +41,6 @@ namespace TeachHub.Controllers
 
             return View(enrollment);
         }
-
         // GET: Enrollments/Create
         public IActionResult Create()
         {
@@ -59,28 +60,34 @@ namespace TeachHub.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "Title", enrollment.CourseId);
             ViewData["LearnerId"] = new SelectList(_context.Learners, "LearnerId", "Name", enrollment.LearnerId);
             return View(enrollment);
         }
 
         // GET: Enrollments/Edit
-        [HttpGet("Edit/{courseId}/{learnerId}")]
+        [HttpGet]
         public async Task<IActionResult> Edit(int courseId, int learnerId)
         {
-            var enrollment = await _context.Enrollments.FindAsync(courseId, learnerId);
+            // Log the requested IDs
+            _logger.LogInformation("Edit requested for CourseId: {CourseId}, LearnerId: {LearnerId}", courseId, learnerId);
+
+            var enrollment = await _context.Enrollments
+                .Include(e => e.Course)
+                .Include(e => e.Learner)
+                .FirstOrDefaultAsync(e => e.CourseId == courseId && e.LearnerId == learnerId);
             if (enrollment == null)
             {
+                _logger.LogWarning("No enrollment found for CourseId: {CourseId}, LearnerId: {LearnerId}", courseId, learnerId);
                 return NotFound();
             }
             ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "Title", enrollment.CourseId);
             ViewData["LearnerId"] = new SelectList(_context.Learners, "LearnerId", "Name", enrollment.LearnerId);
             return View(enrollment);
         }
-
         // POST: Enrollments/Edit
         [HttpPost]
-        [Route("Enrollments/Edit/{courseId}/{learnerId}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int courseId, int learnerId, [Bind("CourseId,LearnerId")] Enrollment enrollment)
         {
@@ -114,6 +121,7 @@ namespace TeachHub.Controllers
             return View(enrollment);
         }
 
+
         // GET: Enrollments/Delete
         public async Task<IActionResult> Delete(int courseId, int learnerId)
         {
@@ -135,7 +143,11 @@ namespace TeachHub.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int courseId, int learnerId)
         {
-            var enrollment = await _context.Enrollments.FindAsync(courseId, learnerId);
+            var enrollment = await _context.Enrollments
+                .Include(e => e.Course)
+                .Include(e => e.Learner)
+                .FirstOrDefaultAsync(m => m.CourseId == courseId && m.LearnerId == learnerId);
+
             if (enrollment != null)
             {
                 _context.Enrollments.Remove(enrollment);

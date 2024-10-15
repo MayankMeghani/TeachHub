@@ -29,7 +29,7 @@
                     @Html.DisplayFor(modelItem => item.Course.Title)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Learner.LearnerId)
+                    @Html.DisplayFor(modelItem => item.Learner.Name)
                 </td>
                 <td>
                     <a asp-controller="Enrollments" asp-action="Edit" asp-route-courseId="@item.CourseId" asp-route-learnerId="@item.LearnerId">Edit</a>

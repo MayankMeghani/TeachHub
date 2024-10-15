@@ -28,7 +28,7 @@ namespace TeachHub.Data
                 .HasMany<Course>(t => t.Courses)
                 .WithOne(c => c.Teacher)
                 .HasForeignKey(c => c.TeacherId)
-                .OnDelete(DeleteBehavior.Cascade);  // If a teacher is deleted, courses are also deleted
+                .OnDelete(DeleteBehavior.Cascade);  
 
             modelBuilder.Entity<Learner>()
                 .HasKey(l => l.LearnerId);  
@@ -37,8 +37,7 @@ namespace TeachHub.Data
                 .HasMany<Review>(l => l.Reviews)
                 .WithOne(r => r.Learner)
                 .HasForeignKey(r => r.LearnerId)
-                .OnDelete(DeleteBehavior.Cascade);  // If a learner is deleted, their reviews are deleted
-
+                .OnDelete(DeleteBehavior.Cascade);  
             
             modelBuilder.Entity<Course>()
                 .HasKey(c => c.CourseId);  
@@ -47,7 +46,7 @@ namespace TeachHub.Data
                 .HasMany<Review>(c => c.Reviews)
                 .WithOne(r => r.Course)
                 .HasForeignKey(r => r.CourseId)
-                .OnDelete(DeleteBehavior.Cascade);  // If a course is deleted, related reviews are also deleted
+                .OnDelete(DeleteBehavior.Cascade);  
 
             modelBuilder.Entity<Review>()
                 .HasKey(r => r.ReviewId);  // Primary key
