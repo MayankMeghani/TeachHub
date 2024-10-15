@@ -74,13 +74,23 @@ namespace TeachHub.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LearnerId"));
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("ProfilePicture")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("LearnerId");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
 
                     b.ToTable("Learners");
                 });
@@ -131,25 +141,6 @@ namespace TeachHub.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("TeacherId");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("Teachers");
-                });
-
-            modelBuilder.Entity("TeachHub.Models.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -166,12 +157,38 @@ namespace TeachHub.Migrations
                     b.Property<string>("ProfilePicture")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Role")
+                    b.HasKey("TeacherId");
+
+                    b.ToTable("Teachers");
+                });
+
+            modelBuilder.Entity("TeachHub.Models.Video", b =>
+                {
+                    b.Property<int>("VideoId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VideoId"));
 
-                    b.ToTable("Users");
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UploadedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("VideoUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("VideoId");
+
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("Videos");
                 });
 
             modelBuilder.Entity("TeachHub.Models.Course", b =>
@@ -204,17 +221,6 @@ namespace TeachHub.Migrations
                     b.Navigation("Learner");
                 });
 
-            modelBuilder.Entity("TeachHub.Models.Learner", b =>
-                {
-                    b.HasOne("TeachHub.Models.User", "User")
-                        .WithOne()
-                        .HasForeignKey("TeachHub.Models.Learner", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("TeachHub.Models.Review", b =>
                 {
                     b.HasOne("TeachHub.Models.Course", "Course")
@@ -234,15 +240,15 @@ namespace TeachHub.Migrations
                     b.Navigation("Learner");
                 });
 
-            modelBuilder.Entity("TeachHub.Models.Teacher", b =>
+            modelBuilder.Entity("TeachHub.Models.Video", b =>
                 {
-                    b.HasOne("TeachHub.Models.User", "User")
-                        .WithOne()
-                        .HasForeignKey("TeachHub.Models.Teacher", "UserId")
+                    b.HasOne("TeachHub.Models.Course", "Course")
+                        .WithMany("Videos")
+                        .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Course");
                 });
 
             modelBuilder.Entity("TeachHub.Models.Course", b =>
@@ -250,6 +256,8 @@ namespace TeachHub.Migrations
                     b.Navigation("Enrollments");
 
                     b.Navigation("Reviews");
+
+                    b.Navigation("Videos");
                 });
 
             modelBuilder.Entity("TeachHub.Models.Learner", b =>

@@ -22,8 +22,7 @@ namespace TeachHub.Controllers
         // GET: Learners
         public async Task<IActionResult> Index()
         {
-            var teachHubContext = _context.Learners.Include(l => l.User);
-            return View(await teachHubContext.ToListAsync());
+            return View(await _context.Learners.ToListAsync());
         }
 
         // GET: Learners/Details/5
@@ -35,7 +34,6 @@ namespace TeachHub.Controllers
             }
 
             var learner = await _context.Learners
-                .Include(l => l.User)
                 .FirstOrDefaultAsync(m => m.LearnerId == id);
             if (learner == null)
             {
@@ -48,7 +46,6 @@ namespace TeachHub.Controllers
         // GET: Learners/Create
         public IActionResult Create()
         {
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email");
             return View();
         }
 
@@ -57,7 +54,7 @@ namespace TeachHub.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("LearnerId,UserId")] Learner learner)
+        public async Task<IActionResult> Create([Bind("LearnerId,Name,Email,Password,ProfilePicture")] Learner learner)
         {
             if (ModelState.IsValid)
             {
@@ -65,7 +62,6 @@ namespace TeachHub.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", learner.UserId);
             return View(learner);
         }
 
@@ -82,7 +78,6 @@ namespace TeachHub.Controllers
             {
                 return NotFound();
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", learner.UserId);
             return View(learner);
         }
 
@@ -91,7 +86,7 @@ namespace TeachHub.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("LearnerId,UserId")] Learner learner)
+        public async Task<IActionResult> Edit(int id, [Bind("LearnerId,Name,Email,Password,ProfilePicture")] Learner learner)
         {
             if (id != learner.LearnerId)
             {
@@ -118,7 +113,6 @@ namespace TeachHub.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", learner.UserId);
             return View(learner);
         }
 
@@ -131,7 +125,6 @@ namespace TeachHub.Controllers
             }
 
             var learner = await _context.Learners
-                .Include(l => l.User)
                 .FirstOrDefaultAsync(m => m.LearnerId == id);
             if (learner == null)
             {

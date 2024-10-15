@@ -65,6 +65,7 @@ namespace TeachHub.Controllers
         }
 
         // GET: Enrollments/Edit
+        [HttpGet("Edit/{courseId}/{learnerId}")]
         public async Task<IActionResult> Edit(int courseId, int learnerId)
         {
             var enrollment = await _context.Enrollments.FindAsync(courseId, learnerId);
@@ -79,6 +80,7 @@ namespace TeachHub.Controllers
 
         // POST: Enrollments/Edit
         [HttpPost]
+        [Route("Enrollments/Edit/{courseId}/{learnerId}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int courseId, int learnerId, [Bind("CourseId,LearnerId")] Enrollment enrollment)
         {

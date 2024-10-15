@@ -49,8 +49,8 @@ namespace TeachHub.Controllers
         // GET: Reviews/Create
         public IActionResult Create()
         {
-            ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "CourseId");
-            ViewData["LearnerId"] = new SelectList(_context.Learners, "LearnerId", "LearnerId");
+            ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "Title");
+            ViewData["LearnerId"] = new SelectList(_context.Learners, "LearnerId", "Name");
             return View();
         }
 
@@ -67,8 +67,8 @@ namespace TeachHub.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "CourseId", review.CourseId);
-            ViewData["LearnerId"] = new SelectList(_context.Learners, "LearnerId", "LearnerId", review.LearnerId);
+            ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "Title", review.CourseId);
+            ViewData["LearnerId"] = new SelectList(_context.Learners, "LearnerId", "Name", review.LearnerId);
             return View(review);
         }
 
@@ -85,8 +85,8 @@ namespace TeachHub.Controllers
             {
                 return NotFound();
             }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "CourseId", review.CourseId);
-            ViewData["LearnerId"] = new SelectList(_context.Learners, "LearnerId", "LearnerId", review.LearnerId);
+            ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "Title", review.CourseId);
+            ViewData["LearnerId"] = new SelectList(_context.Learners, "LearnerId", "Name", review.LearnerId);
             return View(review);
         }
 
@@ -122,8 +122,8 @@ namespace TeachHub.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "CourseId", review.CourseId);
-            ViewData["LearnerId"] = new SelectList(_context.Learners, "LearnerId", "LearnerId", review.LearnerId);
+            ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "Title", review.CourseId);
+            ViewData["LearnerId"] = new SelectList(_context.Learners, "LearnerId", "Name", review.LearnerId);
             return View(review);
         }
 

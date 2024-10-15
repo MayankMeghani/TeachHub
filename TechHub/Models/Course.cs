@@ -19,6 +19,9 @@ namespace TeachHub.Models
         public IEnumerable<Review>? Reviews { get; set; } // Navigation property for Reviews
         
         public IEnumerable<Enrollment> ?Enrollments { get; set; }
-    
+
+        public IEnumerable<Video>? Videos { get; set; } // Navigation property for Videos
+
+
     }
 }

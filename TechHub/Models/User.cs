@@ -4,8 +4,6 @@ namespace TeachHub.Models
 {
     public class User
     {
-        public int Id { get; set; }
-
         [Required]public string Name { get; set; }
 
         [Required]
@@ -18,16 +16,6 @@ namespace TeachHub.Models
         public string Password { get; set; }
 
         public string? ProfilePicture { get; set; }
-
-
-        [Required]
-        public UserRole Role {  get; set; } 
-        public enum UserRole
-        {
-            Teacher = 1,
-            Learner = 2
-        }
-
 
     }
 }

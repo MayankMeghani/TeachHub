@@ -10,29 +10,59 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="CourseId" />
+
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="CreatedAt" class="control-label"></label>
                 <input asp-for="CreatedAt" class="form-control" />
                 <span asp-validation-for="CreatedAt" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="TeacherId" class="control-label"></label>
+                <label asp-for="TeacherId" class="control-label">Teacher</label>
                 <select asp-for="TeacherId" class="form-control" asp-items="ViewBag.TeacherId"></select>
                 <span asp-validation-for="TeacherId" class="text-danger"></span>
             </div>
+
+            <!-- Existing videos with preview -->
+            <div class="form-group">
+                <label>Existing Videos</label>
+                <ul>
+                    @foreach (var video in Model.Videos)
+                    {
+                        <li>
+                            <label>@video.Title</label>
+                            <video width="320" height="240" controls>
+                                <source src="@video.VideoUrl" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                            <br />
+                            <input type="checkbox" name="videoIdsToRemove" value="@video.VideoId" /> Remove
+                        </li>
+                    }
+                </ul>
+            </div>
+
+            <!-- Upload new videos -->
+            <div class="form-group">
+                <label for="videoFiles">Upload New Videos</label>
+                <input type="file" name="videoFiles" multiple class="form-control" />
+            </div>
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -45,5 +75,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

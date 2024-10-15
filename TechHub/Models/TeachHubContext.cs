@@ -15,21 +15,15 @@ namespace TeachHub.Data
         public DbSet<Learner> Learners { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; } 
         public DbSet<Review> Reviews { get; set; }
-        public DbSet<User> Users { get; set; }
+        //public DbSet<User> Users { get; set; }
+        public DbSet<Video> Videos { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>()
-                .HasKey(u => u.Id);
 
             modelBuilder.Entity<Teacher>()
                 .HasKey(t => t.TeacherId);  
 
-            modelBuilder.Entity<Teacher>()
-                .HasOne(t => t.User)
-                .WithOne()
-                .HasForeignKey<Teacher>(t => t.UserId)  // Foreign key to User
-                .OnDelete(DeleteBehavior.Cascade);  // Cascading delete
-
+            
             modelBuilder.Entity<Teacher>()
                 .HasMany<Course>(t => t.Courses)
                 .WithOne(c => c.Teacher)
@@ -38,13 +32,7 @@ namespace TeachHub.Data
 
             modelBuilder.Entity<Learner>()
                 .HasKey(l => l.LearnerId);  
-
-            modelBuilder.Entity<Learner>()
-                .HasOne(l => l.User)
-                .WithOne()
-                .HasForeignKey<Learner>(l => l.UserId)  // Foreign key to User
-                .OnDelete(DeleteBehavior.Cascade);  // Cascading delete
-
+            
             modelBuilder.Entity<Learner>()
                 .HasMany<Review>(l => l.Reviews)
                 .WithOne(r => r.Learner)
