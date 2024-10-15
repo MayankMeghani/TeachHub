@@ -5,18 +5,24 @@ using TeachHub.Models;
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using TeachHub.Services;
+using TeachHub.ViewModels;
 
 namespace TeachHub.Controllers
 {
     public class EnrollmentsController : Controller
     {
         private readonly TeachHubContext _context;
+        private readonly IConfiguration _configuration;
+        private readonly StripeService _stripeService;
         private readonly ILogger<CoursesController> _logger; // Add logger
 
-        public EnrollmentsController(TeachHubContext context,ILogger<CoursesController> logger)
+        public EnrollmentsController(TeachHubContext context,StripeService stripeService,IConfiguration configuration,ILogger<CoursesController> logger)
         {
             _context = context;
+            _configuration = configuration;
             _logger = logger;
+            _stripeService = stripeService;
         }
 
         // GET: Enrollments
@@ -46,81 +52,53 @@ namespace TeachHub.Controllers
         {
             ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "Title");
             ViewData["LearnerId"] = new SelectList(_context.Learners, "LearnerId", "Name");
+            ViewBag.StripePublishableKey = _configuration["Stripe:PublishableKey"];
+
             return View();
         }
 
-        // POST: Enrollments/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CourseId,LearnerId")] Enrollment enrollment)
+        public async Task<IActionResult> Create(EnrollmentViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(enrollment);
+                // Reload the dropdowns if validation fails
+                ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "Title");
+                ViewData["LearnerId"] = new SelectList(_context.Learners, "LearnerId", "Name");
+                return View(model);
+            }
+
+            try
+            {
+                // Process the payment using the Stripe service
+                string chargeId = await _stripeService.CreateCharge(model.StripeToken, model.Amount);
+
+                // Payment successful, proceed with enrollment
+                var enrollment = new Enrollment
+                {
+                    CourseId = model.CourseId,
+                    LearnerId = model.LearnerId,
+                    TransactionId = chargeId, // Store charge ID
+                    Amount = 100 // Assuming a fixed amount for demonstration
+                };
+
+                _context.Enrollments.Add(enrollment);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+                return RedirectToAction(nameof(Index)); // On success, redirect to the index or a confirmation page
             }
-
-            ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "Title", enrollment.CourseId);
-            ViewData["LearnerId"] = new SelectList(_context.Learners, "LearnerId", "Name", enrollment.LearnerId);
-            return View(enrollment);
-        }
-
-        // GET: Enrollments/Edit
-        [HttpGet]
-        public async Task<IActionResult> Edit(int courseId, int learnerId)
-        {
-            // Log the requested IDs
-            _logger.LogInformation("Edit requested for CourseId: {CourseId}, LearnerId: {LearnerId}", courseId, learnerId);
-
-            var enrollment = await _context.Enrollments
-                .Include(e => e.Course)
-                .Include(e => e.Learner)
-                .FirstOrDefaultAsync(e => e.CourseId == courseId && e.LearnerId == learnerId);
-            if (enrollment == null)
+            catch (Exception ex)
             {
-                _logger.LogWarning("No enrollment found for CourseId: {CourseId}, LearnerId: {LearnerId}", courseId, learnerId);
-                return NotFound();
-            }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "Title", enrollment.CourseId);
-            ViewData["LearnerId"] = new SelectList(_context.Learners, "LearnerId", "Name", enrollment.LearnerId);
-            return View(enrollment);
-        }
-        // POST: Enrollments/Edit
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int courseId, int learnerId, [Bind("CourseId,LearnerId")] Enrollment enrollment)
-        {
-            if (courseId != enrollment.CourseId || learnerId != enrollment.LearnerId)
-            {
-                return NotFound();
-            }
+                // Payment failed, show an error on the view
+                ViewBag.PaymentError = "Payment failed: " + ex.Message;
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(enrollment);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!EnrollmentExists(enrollment.CourseId, enrollment.LearnerId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "Title", enrollment.CourseId);
-            ViewData["LearnerId"] = new SelectList(_context.Learners, "LearnerId", "Name", enrollment.LearnerId);
-            return View(enrollment);
-        }
+                // Reload the dropdowns
+                ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "Title");
+                ViewData["LearnerId"] = new SelectList(_context.Learners, "LearnerId", "Name");
 
+                return View(model); // Show the form again with the error message
+            }
+        }
 
         // GET: Enrollments/Delete
         public async Task<IActionResult> Delete(int courseId, int learnerId)

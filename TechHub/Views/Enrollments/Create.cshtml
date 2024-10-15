@@ -1,17 +1,16 @@
 ﻿@model TeachHub.Models.Enrollment
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Enrollment";
 }
 
-<h1>Create</h1>
+<h1>Create Enrollment</h1>
 
 <h4>Enrollment</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form asp-action="Create" method="post" id="enrollment-form">
             <div class="form-group">
                 <label asp-for="CourseId" class="control-label">Course</label>
                 <select asp-for="CourseId" class="form-control" asp-items="ViewBag.CourseId"></select>
@@ -20,18 +19,48 @@
                 <label asp-for="LearnerId" class="control-label">Learner</label>
                 <select asp-for="LearnerId" class="form-control" asp-items="ViewBag.LearnerId"></select>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+
+            <!-- Payment fields -->
+            <h4>Payment Details</h4>
+            <div id="card-element"><!-- A Stripe Element will be inserted here. --></div>
+
+            <input type="hidden" id="stripeToken" name="stripeToken" />
+
+            <button type="submit" class="btn btn-primary">Enroll Now</button>
+
+            <div id="payment-response" style="color: red;">
+                @if (!string.IsNullOrEmpty(ViewBag.PaymentError))
+                {
+                    <p>@ViewBag.PaymentError</p>
+                }
             </div>
         </form>
-
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        const stripe = Stripe('@ViewBag.StripePublishableKey');
+        const elements = stripe.elements();
+        const cardElement = elements.create('card');
+        cardElement.mount('#card-element');
+
+        const paymentForm = document.getElementById('enrollment-form');
+        paymentForm.addEventListener('submit', async (event) => {
+            event.preventDefault(); // Stop form temporarily to fetch token
+
+            // Create a token and set its value in the hidden input field
+            const { token, error } = await stripe.createToken(cardElement);
+            if (error) {
+                document.getElementById('payment-response').innerText = error.message;
+            } else {
+                // Set the Stripe token in the hidden field
+                document.getElementById('stripeToken').value = token.id;
+
+                // Now allow the form to submit with Stripe token
+                paymentForm.submit();
+            }
+        });
+    </script>
 }

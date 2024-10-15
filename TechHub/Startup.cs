@@ -1,10 +1,7 @@
-﻿using FirebaseAdmin;
-using Google.Apis.Auth.OAuth2;
-using Microsoft.AspNetCore.Builder.Extensions;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TeachHub.Data;
 using TeachHub.Services;
-
+using Stripe;
 namespace TeachHub
 {
     public class Startup
@@ -28,6 +25,9 @@ namespace TeachHub
                 var config = Configuration.GetSection("Firebase:StorageBucket").Value;
                 return new FirebaseService(logger, config);
             });
+            services.AddSingleton<StripeService>();
+
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)

@@ -10,6 +10,8 @@ namespace TeachHub.Models
         [Required]
         public string Description { get; set; } // Description of the course
 
+        [Required] 
+        public float Price { get; set; }
         [Required]
         public DateTime CreatedAt { get; set; } // Date when the course was created
 
