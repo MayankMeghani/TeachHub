@@ -33,7 +33,7 @@ namespace TeachHub.Controllers
         }
 
         // GET: Enrollments/Details
-        public async Task<IActionResult> Details(int courseId, string learnerId)
+        public async Task<IActionResult> Details(int courseId,string learnerId)
         {
             var enrollment = await _context.Enrollments
                 .Include(e => e.Course)

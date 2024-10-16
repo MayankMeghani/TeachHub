@@ -34,6 +34,22 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/HP/Downloads/TeachHub/TechHub/Views/AvailableCourses/Confirmation.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXZhaWxhYmxlQ291cnNlc1xDb25maXJtYXRpb24uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HP/Downloads/TeachHub/TechHub/Views/AvailableCourses/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXZhaWxhYmxlQ291cnNlc1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HP/Downloads/TeachHub/TechHub/Views/AvailableCourses/Enroll.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXZhaWxhYmxlQ291cnNlc1xFbnJvbGwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HP/Downloads/TeachHub/TechHub/Views/AvailableCourses/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXZhaWxhYmxlQ291cnNlc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/HP/Downloads/TeachHub/TechHub/Views/Courses/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ291cnNlc1xDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -112,6 +128,30 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/HP/Downloads/TeachHub/TechHub/Views/MyCourses/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTXlDb3Vyc2VzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HP/Downloads/TeachHub/TechHub/Views/MyEnrollments/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTXlFbnJvbGxtZW50c1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HP/Downloads/TeachHub/TechHub/Views/MyEnrollments/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTXlFbnJvbGxtZW50c1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HP/Downloads/TeachHub/TechHub/Views/MyReviews/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTXlSZXZpZXdzXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HP/Downloads/TeachHub/TechHub/Views/MyReviews/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTXlSZXZpZXdzXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HP/Downloads/TeachHub/TechHub/Views/MyReviews/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTXlSZXZpZXdzXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HP/Downloads/TeachHub/TechHub/Views/MyReviews/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTXlSZXZpZXdzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/HP/Downloads/TeachHub/TechHub/Views/Profile/CreateLearner.cshtml]
