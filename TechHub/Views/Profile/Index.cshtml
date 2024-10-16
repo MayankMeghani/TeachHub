@@ -1,0 +1,55 @@
+﻿@model User
+
+<h2>Your Profile</h2>
+
+<p>
+    <strong>Email:</strong> @Model.Email
+</p>
+
+@if (!Model.IsProfileComplete)
+{
+    <p>
+        <strong>Is Profile Complete:</strong> No
+    </p>
+    @if (User.IsInRole("Teacher"))
+    {
+        <a class="btn btn-primary" asp-controller="Profile" asp-action="CreateTeacher">Complete Your Profile</a>
+    }
+    else if (User.IsInRole("Learner"))
+    {
+        <a class="btn btn-primary" asp-controller="Profile" asp-action="CreateLearner">Complete Your Profile</a>
+    }
+}
+else
+{
+    <p>
+        <strong>Name:</strong> @Model.Learner?.Name @Model.Teacher?.Name
+    </p>
+
+    <p>
+        <strong>Profile Picture:</strong>
+        @if (Model.Teacher?.ProfilePicture != null || Model.Learner?.ProfilePicture != null)
+        {
+            <img src="@Url.Content(Model.Teacher?.ProfilePicture ?? Model.Learner?.ProfilePicture)" alt="Profile Picture" class="img-thumbnail" style="width: 150px; height: 150px;" />
+        }
+        else
+        {
+            <span>Not uploaded</span>
+        }
+    </p>
+
+    @if (User.IsInRole("Teacher") && Model.Teacher != null)
+    {
+        <p>
+            <strong>Bio:</strong> @Model.Teacher.Bio
+        </p>
+
+        <a class="btn btn-primary" asp-controller="profile" asp-action="EditTeacher" asp-route-id="@Model.Teacher.TeacherId">Edit Profile</a>
+    }
+    @if (User.IsInRole("Learner") && Model.Learner != null)
+    {
+
+        <a class="btn btn-primary" asp-controller="Profile" asp-action="EditLearner" asp-route-id="@Model.Learner.LearnerId">Edit Profile</a>
+    }
+
+}

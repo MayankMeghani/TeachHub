@@ -1,4 +1,4 @@
-﻿@model TeachHub.ViewModels.LoginViewModel
+﻿@model LoginViewModel
 
 <form asp-action="Login" method="post">
     <div class="form-group">
@@ -13,11 +13,7 @@
         <span asp-validation-for="Password" class="text-danger"></span>
     </div>
 
-    <div class="form-group">
-        <label asp-for="RememberMe"></label>
-        <input asp-for="RememberMe" type="checkbox" />
-    </div>
-
+    
     <!-- Display general errors -->
     @if (!ViewData.ModelState.IsValid)
     {

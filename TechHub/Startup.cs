@@ -2,6 +2,7 @@
 using TeachHub.Data;
 using TeachHub.Services;
 using Microsoft.AspNetCore.Identity;
+using TeachHub.Models;
 
 namespace TeachHub
 {
@@ -17,14 +18,17 @@ namespace TeachHub
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLogging();
+
 
             services.AddDbContext<TeachHubContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             // Adding Identity services
-           services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<TeachHubContext>()
                 .AddDefaultTokenProviders();
+
 
             // Configure authentication cookie settings
             services.ConfigureApplicationCookie(options =>
@@ -46,7 +50,7 @@ namespace TeachHub
 
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {

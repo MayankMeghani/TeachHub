@@ -12,8 +12,8 @@ using TeachHub.Data;
 namespace TeachHub.Migrations
 {
     [DbContext(typeof(TeachHubContext))]
-    [Migration("20241016054210_AddIdentityTables")]
-    partial class AddIdentityTables
+    [Migration("20241016095439_changes")]
+    partial class changes
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -89,6 +89,11 @@ namespace TeachHub.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("nvarchar(13)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -140,6 +145,10 @@ namespace TeachHub.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasDiscriminator().HasValue("IdentityUser");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -241,8 +250,9 @@ namespace TeachHub.Migrations
                     b.Property<float>("Price")
                         .HasColumnType("real");
 
-                    b.Property<int>("TeacherId")
-                        .HasColumnType("int");
+                    b.Property<string>("TeacherId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -257,8 +267,8 @@ namespace TeachHub.Migrations
 
             modelBuilder.Entity("TeachHub.Models.Enrollment", b =>
                 {
-                    b.Property<int>("LearnerId")
-                        .HasColumnType("int");
+                    b.Property<string>("LearnerId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
@@ -279,29 +289,17 @@ namespace TeachHub.Migrations
 
             modelBuilder.Entity("TeachHub.Models.Learner", b =>
                 {
-                    b.Property<int>("LearnerId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LearnerId"));
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<string>("ProfilePicture")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("LearnerId");
+                    b.HasKey("Id");
 
                     b.ToTable("Learners");
                 });
@@ -324,8 +322,9 @@ namespace TeachHub.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("LearnerId")
-                        .HasColumnType("int");
+                    b.Property<string>("LearnerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Rating")
                         .HasColumnType("int");
@@ -341,34 +340,22 @@ namespace TeachHub.Migrations
 
             modelBuilder.Entity("TeachHub.Models.Teacher", b =>
                 {
-                    b.Property<int>("TeacherId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TeacherId"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Bio")
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<string>("ProfilePicture")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("TeacherId");
+                    b.HasKey("Id");
 
                     b.ToTable("Teachers");
                 });
@@ -400,6 +387,16 @@ namespace TeachHub.Migrations
                     b.HasIndex("CourseId");
 
                     b.ToTable("Videos");
+                });
+
+            modelBuilder.Entity("TeachHub.Models.User", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<bool>("IsProfileComplete")
+                        .HasColumnType("bit");
+
+                    b.HasDiscriminator().HasValue("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -483,6 +480,17 @@ namespace TeachHub.Migrations
                     b.Navigation("Learner");
                 });
 
+            modelBuilder.Entity("TeachHub.Models.Learner", b =>
+                {
+                    b.HasOne("TeachHub.Models.User", "User")
+                        .WithOne("Learner")
+                        .HasForeignKey("TeachHub.Models.Learner", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("TeachHub.Models.Review", b =>
                 {
                     b.HasOne("TeachHub.Models.Course", "Course")
@@ -500,6 +508,17 @@ namespace TeachHub.Migrations
                     b.Navigation("Course");
 
                     b.Navigation("Learner");
+                });
+
+            modelBuilder.Entity("TeachHub.Models.Teacher", b =>
+                {
+                    b.HasOne("TeachHub.Models.User", "User")
+                        .WithOne("Teacher")
+                        .HasForeignKey("TeachHub.Models.Teacher", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TeachHub.Models.Video", b =>
@@ -532,6 +551,15 @@ namespace TeachHub.Migrations
             modelBuilder.Entity("TeachHub.Models.Teacher", b =>
                 {
                     b.Navigation("Courses");
+                });
+
+            modelBuilder.Entity("TeachHub.Models.User", b =>
+                {
+                    b.Navigation("Learner")
+                        .IsRequired();
+
+                    b.Navigation("Teacher")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
