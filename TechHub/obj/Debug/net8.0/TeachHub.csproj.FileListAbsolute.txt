@@ -510,3 +510,12 @@ C:\Users\HP\Downloads\TeachHub\TechHub\obj\Debug\net8.0\TeachHub.pdb
 C:\Users\HP\Downloads\TeachHub\TechHub\obj\Debug\net8.0\TeachHub.genruntimeconfig.cache
 C:\Users\HP\Downloads\TeachHub\TechHub\obj\Debug\net8.0\ref\TeachHub.dll
 C:\Users\HP\Downloads\TeachHub\TechHub\bin\Debug\net8.0\Stripe.net.dll
+C:\Users\HP\Downloads\TeachHub\TechHub\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.Internal.dll
+C:\Users\HP\Downloads\TeachHub\TechHub\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+C:\Users\HP\Downloads\TeachHub\TechHub\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+C:\Users\HP\Downloads\TeachHub\TechHub\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.UI.dll
+C:\Users\HP\Downloads\TeachHub\TechHub\bin\Debug\net8.0\Microsoft.Extensions.FileProviders.Embedded.dll
+C:\Users\HP\Downloads\TeachHub\TechHub\bin\Debug\net8.0\Microsoft.Extensions.Identity.Core.dll
+C:\Users\HP\Downloads\TeachHub\TechHub\bin\Debug\net8.0\Microsoft.Extensions.Identity.Stores.dll
+C:\Users\HP\Downloads\TeachHub\TechHub\bin\Debug\net8.0\System.Security.Permissions.dll
+C:\Users\HP\Downloads\TeachHub\TechHub\obj\Debug\net8.0\TeachHub.MvcApplicationPartsAssemblyInfo.cs

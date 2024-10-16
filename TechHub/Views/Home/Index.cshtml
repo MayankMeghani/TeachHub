@@ -4,7 +4,12 @@
 
 <h1>Welcome to TeachHub</h1>
 <p>Learn about building Web apps with ASP.NET Core.</p>
-
+@if (User.Identity.IsAuthenticated)
+{
+<h3>
+    <span class="navbar-text">Hello, @User.Identity.Name!</span>
+</h3>
+}
 <h2>Navigate to:</h2>
 <ul>
     <li>

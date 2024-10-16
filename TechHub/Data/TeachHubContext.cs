@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using TeachHub.Models;
 
 namespace TeachHub.Data 
 {
-    public class TeachHubContext : DbContext
+    public class TeachHubContext : IdentityDbContext
     {
         public TeachHubContext(DbContextOptions<TeachHubContext> options)
             : base(options)

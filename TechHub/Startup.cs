@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TeachHub.Data;
 using TeachHub.Services;
-using Stripe;
+using Microsoft.AspNetCore.Identity;
+
 namespace TeachHub
 {
     public class Startup
@@ -16,9 +17,23 @@ namespace TeachHub
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+
             services.AddDbContext<TeachHubContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            // Adding Identity services
+           services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<TeachHubContext>()
+                .AddDefaultTokenProviders();
+
+            // Configure authentication cookie settings
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Account/Login";
+                options.LogoutPath = "/Account/Logout";
+                options.AccessDeniedPath = "/Account/AccessDenied";
+            }); 
+            
             services.AddSingleton<FirebaseService>(sp =>
             {
                 var logger = sp.GetRequiredService<ILogger<FirebaseService>>();
@@ -26,6 +41,7 @@ namespace TeachHub
                 return new FirebaseService(logger, config);
             });
             services.AddSingleton<StripeService>();
+            services.AddControllersWithViews();
 
 
         }
@@ -43,7 +59,9 @@ namespace TeachHub
             }
             app.UseStaticFiles();
             app.UseRouting();
-            
+            app.UseAuthentication(); // Identity authentication
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
 
