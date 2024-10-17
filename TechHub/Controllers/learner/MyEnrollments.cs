@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TeachHub.Data;
 using TeachHub.Models;
@@ -65,7 +66,36 @@ namespace TeachHub.Controllers.learner
             }
 
             return View(course);
-        }        
+        }
+        public async Task<IActionResult> Review(int id)
+        {
+            // Await the result to get the user object
+            var user = await _userManager.GetUserAsync(User);
+
+            // Create a new Review object
+            var review = new Review
+            {
+                CourseId = id,
+                LearnerId = user.Id, // Set the current user's ID
+                CreatedAt = DateTime.Now,
+            };
+
+            return View(review); // Pass the review object to the view
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Review([Bind("ReviewId,Content,Rating,CreatedAt,CourseId,LearnerId")] Review review)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(review);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(review);
+        }
 
     }
 }
