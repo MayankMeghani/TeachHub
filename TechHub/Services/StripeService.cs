@@ -15,7 +15,7 @@ namespace TeachHub.Services
             _environment = configuration["Stripe:Environment"];
         }
 
-        public async Task<string> CreateCharge(string token, long amount)
+        public async Task<string> CreateCharge(string token, float amount)
         {
             // Simulate a charge in test mode
             await Task.Delay(500); // Simulate API call delay

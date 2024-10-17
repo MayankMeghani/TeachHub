@@ -18,7 +18,7 @@ namespace TeachHub.Models
 
         public int CourseId { get; set; } // Foreign Key for the Course
         public Course? Course { get; set; } // Navigation property for the Course
-        public int LearnerId { get; set; } // Foreign Key for the Student (Reviewer)
+        public string LearnerId { get; set; } // Foreign Key for the Student (Reviewer)
         public Learner? Learner { get; set; } // Navigation property for the Student
     }
 }

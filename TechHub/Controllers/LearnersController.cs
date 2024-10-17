@@ -22,11 +22,12 @@ namespace TeachHub.Controllers
         // GET: Learners
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Learners.ToListAsync());
+            var teachHubContext = _context.Learners.Include(l => l.User);
+            return View(await teachHubContext.ToListAsync());
         }
 
         // GET: Learners/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string id)
         {
             if (id == null)
             {
@@ -34,6 +35,7 @@ namespace TeachHub.Controllers
             }
 
             var learner = await _context.Learners
+                .Include(l => l.User)
                 .FirstOrDefaultAsync(m => m.LearnerId == id);
             if (learner == null)
             {
@@ -46,6 +48,7 @@ namespace TeachHub.Controllers
         // GET: Learners/Create
         public IActionResult Create()
         {
+            ViewData["Id"] = new SelectList(_context.Set<User>(), "Id", "Id");
             return View();
         }
 
@@ -54,7 +57,7 @@ namespace TeachHub.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("LearnerId,Name,Email,Password,ProfilePicture")] Learner learner)
+        public async Task<IActionResult> Create([Bind("Id,Name,ProfilePicture")] Learner learner)
         {
             if (ModelState.IsValid)
             {
@@ -62,11 +65,12 @@ namespace TeachHub.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["Id"] = new SelectList(_context.Set<User>(), "LearnerId", "LearnerId", learner.LearnerId);
             return View(learner);
         }
 
         // GET: Learners/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
             {
@@ -78,6 +82,7 @@ namespace TeachHub.Controllers
             {
                 return NotFound();
             }
+            ViewData["Id"] = new SelectList(_context.Set<User>(), "LearnerId", "LearnerId", learner.LearnerId);
             return View(learner);
         }
 
@@ -86,7 +91,7 @@ namespace TeachHub.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("LearnerId,Name,Email,Password,ProfilePicture")] Learner learner)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,Name,ProfilePicture")] Learner learner)
         {
             if (id != learner.LearnerId)
             {
@@ -113,11 +118,12 @@ namespace TeachHub.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["Id"] = new SelectList(_context.Set<User>(), "LearnerId", "LearnerId", learner.LearnerId);
             return View(learner);
         }
 
         // GET: Learners/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
             {
@@ -125,6 +131,7 @@ namespace TeachHub.Controllers
             }
 
             var learner = await _context.Learners
+                .Include(l => l.User)
                 .FirstOrDefaultAsync(m => m.LearnerId == id);
             if (learner == null)
             {
@@ -137,7 +144,7 @@ namespace TeachHub.Controllers
         // POST: Learners/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var learner = await _context.Learners.FindAsync(id);
             if (learner != null)
@@ -149,7 +156,7 @@ namespace TeachHub.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool LearnerExists(int id)
+        private bool LearnerExists(string id)
         {
             return _context.Learners.Any(e => e.LearnerId == id);
         }

@@ -59,7 +59,7 @@ namespace TeachHub.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CourseId,Title,Description,CreatedAt,TeacherId")] Course course, List<IFormFile> videoFiles)
+        public async Task<IActionResult> Create([Bind("CourseId,Title,Description,Price,CreatedAt,TeacherId")] Course course, List<IFormFile> videoFiles)
         {
             if (ModelState.IsValid)
             {
@@ -138,7 +138,6 @@ namespace TeachHub.Controllers
             return View(course);
         }
         // GET: Courses/Edit/5
-        // GET: Courses/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -160,7 +159,7 @@ namespace TeachHub.Controllers
         // POST: Courses/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CourseId,Title,Description,CreatedAt,TeacherId")] Course course, List<IFormFile> videoFiles, List<int> videoIdsToRemove)
+        public async Task<IActionResult> Edit(int id, [Bind("CourseId,Title,Description,Price,CreatedAt,TeacherId")] Course course, List<IFormFile> videoFiles, List<int> videoIdsToRemove)
         {
             if (id != course.CourseId)
             {

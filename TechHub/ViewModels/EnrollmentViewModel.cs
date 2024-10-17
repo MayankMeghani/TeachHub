@@ -5,6 +5,6 @@
         public string StripeToken { get; set; }
         public long Amount { get; set; }
         public int CourseId { get; set; }
-        public int LearnerId { get; set; }
+        public string LearnerId { get; set; }
     }
 }

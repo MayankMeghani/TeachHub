@@ -1,0 +1,27 @@
+﻿@model IEnumerable<CourseEnrollmentViewModel>
+
+<h2>Courses with Enrollments</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Course Title</th>
+            <th>Description</th>
+            <th>Students Enrolled</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var course in Model)
+        {
+            <tr>
+                <td>@course.Title</td>
+                <td>@course.Description</td>
+                <td>@course.StudentCount</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@course.CourseId" class="btn btn-primary">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

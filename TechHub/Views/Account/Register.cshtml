@@ -1,8 +1,6 @@
-﻿@model TeachHub.ViewModels.RegisterViewModel
+﻿@model RegisterViewModel
 
 <form asp-action="Register" method="post">
-
-    <!-- Display general errors -->
     @if (!ViewData.ModelState.IsValid)
     {
         <div class="text-danger">
@@ -12,6 +10,7 @@
             }
         </div>
     }
+
     <div class="form-group">
         <label asp-for="Email"></label>
         <input asp-for="Email" class="form-control" />
@@ -30,6 +29,15 @@
         <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
     </div>
 
+    <!-- Role Selection -->
+    <div class="form-group">
+        <label asp-for="Role"></label>
+        <select asp-for="Role" class="form-control">
+            <option value="Learner">Learner</option>
+            <option value="Teacher">Teacher</option>
+        </select>
+        <span asp-validation-for="Role" class="text-danger"></span>
+    </div>
 
     <button type="submit" class="btn btn-primary">Register</button>
 </form>

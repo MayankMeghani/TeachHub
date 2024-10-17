@@ -21,26 +21,26 @@ namespace TeachHub.Data
         public DbSet<Video> Videos { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Teacher>()
+          .HasKey(t => t.TeacherId); // Set Id as the primary key
 
             modelBuilder.Entity<Teacher>()
-                .HasKey(t => t.TeacherId);  
+                .HasOne<User>(t => t.User)
+                .WithOne(u => u.Teacher)
+                .HasForeignKey<Teacher>(t => t.TeacherId) // Id is a foreign key
+                .OnDelete(DeleteBehavior.Cascade); // Cascade delete
 
-            
-            modelBuilder.Entity<Teacher>()
-                .HasMany<Course>(t => t.Courses)
-                .WithOne(c => c.Teacher)
-                .HasForeignKey(c => c.TeacherId)
-                .OnDelete(DeleteBehavior.Cascade);  
+            // Configure the Learner entity
+            modelBuilder.Entity<Learner>()
+                .HasKey(l => l.LearnerId); // Set Id as the primary key
 
             modelBuilder.Entity<Learner>()
-                .HasKey(l => l.LearnerId);  
-            
-            modelBuilder.Entity<Learner>()
-                .HasMany<Review>(l => l.Reviews)
-                .WithOne(r => r.Learner)
-                .HasForeignKey(r => r.LearnerId)
-                .OnDelete(DeleteBehavior.Cascade);  
-            
+                .HasOne<User>(l => l.User)
+                .WithOne(u => u.Learner)
+                .HasForeignKey<Learner>(l => l.LearnerId) // Id is a foreign key
+                .OnDelete(DeleteBehavior.Cascade); // Cascade delete
+
+
             modelBuilder.Entity<Course>()
                 .HasKey(c => c.CourseId);  
 

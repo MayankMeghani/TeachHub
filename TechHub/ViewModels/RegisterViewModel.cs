@@ -12,10 +12,12 @@ namespace TeachHub.ViewModels
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
+        [Required]
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
-    }
 
+        [Required]
+        public string Role { get; set; }  // Add a role field for Teacher or Learner
+    }
 }

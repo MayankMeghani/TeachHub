@@ -33,7 +33,7 @@ namespace TeachHub.Controllers
         }
 
         // GET: Enrollments/Details
-        public async Task<IActionResult> Details(int courseId, int learnerId)
+        public async Task<IActionResult> Details(int courseId,string learnerId)
         {
             var enrollment = await _context.Enrollments
                 .Include(e => e.Course)
@@ -79,7 +79,9 @@ namespace TeachHub.Controllers
                     CourseId = model.CourseId,
                     LearnerId = model.LearnerId,
                     TransactionId = chargeId, // Store charge ID
-                    Amount = 100 // Assuming a fixed amount for demonstration
+                    Amount = 100, // Assuming a fixed amount for demonstration
+                    TransactionDate = DateTime.Now // Assign the current date and time
+
                 };
 
                 _context.Enrollments.Add(enrollment);
@@ -101,7 +103,7 @@ namespace TeachHub.Controllers
         }
 
         // GET: Enrollments/Delete
-        public async Task<IActionResult> Delete(int courseId, int learnerId)
+        public async Task<IActionResult> Delete(int courseId, string learnerId)
         {
             var enrollment = await _context.Enrollments
                 .Include(e => e.Course)
@@ -119,7 +121,7 @@ namespace TeachHub.Controllers
         // POST: Enrollments/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int courseId, int learnerId)
+        public async Task<IActionResult> DeleteConfirmed(int courseId, string learnerId)
         {
             var enrollment = await _context.Enrollments
                 .Include(e => e.Course)
@@ -135,7 +137,7 @@ namespace TeachHub.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool EnrollmentExists(int courseId, int learnerId)
+        private bool EnrollmentExists(int courseId, string learnerId)
         {
             return _context.Enrollments.Any(e => e.CourseId == courseId && e.LearnerId == learnerId);
         }

@@ -1,23 +1,29 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using TeachHub.Models;
 using TeachHub.ViewModels;
 
 namespace TeachHub.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<AccountController> _logger; // Inject logger
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AccountController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, ILogger<AccountController> logger)
+        public AccountController(
+            UserManager<User> userManager,
+            SignInManager<User> signInManager,
+            RoleManager<IdentityRole> roleManager,
+            ILogger<AccountController> logger)
         {
-            _signInManager = signInManager;
             _userManager = userManager;
+            _signInManager = signInManager;
+            _roleManager = roleManager;
             _logger = logger;
         }
-
         // GET: /Account/Login
         [HttpGet]
         public IActionResult Login()
@@ -34,7 +40,7 @@ namespace TeachHub.Controllers
             {
                 _logger.LogInformation("Attempting login for user: {Email}", model.Email);
 
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password,false ,lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("Login successful for user: {Email}", model.Email);
@@ -66,30 +72,43 @@ namespace TeachHub.Controllers
         {
             if (ModelState.IsValid)
             {
-                _logger.LogInformation("Registering user: {Email}", model.Email);
+                // Create the user with only email and password
+                var user = new User
+                {
+                    UserName = model.Email,
+                    Email = model.Email,
+                    IsProfileComplete = false // Initially set profile as incomplete
+                };
 
-                var user = new IdentityUser { UserName = model.Email, Email = model.Email };
+                // Register the user using ASP.NET Identity
                 var result = await _userManager.CreateAsync(user, model.Password);
+
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("Registration successful for user: {Email}", model.Email);
+                    // Assign the role (Teacher or Learner) to the user
+                    if (!await _roleManager.RoleExistsAsync(model.Role))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole(model.Role));
+                    }
+                    await _userManager.AddToRoleAsync(user, model.Role);
+
+                    // Log the user in
                     await _signInManager.SignInAsync(user, isPersistent: false);
+
+                    // Redirect the user to a page to complete their profile
                     return RedirectToAction(nameof(HomeController.Index), "Home");
                 }
-                else
+
+                foreach (var error in result.Errors)
                 {
-                    _logger.LogWarning("Registration failed for user: {Email}", model.Email);
-                    foreach (var error in result.Errors)
-                    {
-                        _logger.LogError("Error: {ErrorDescription}", error.Description);
-                        ModelState.AddModelError(string.Empty, error.Description); // Adds errors to ModelState
-                    }
+                    ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
 
-            _logger.LogWarning("Registration form validation failed for user: {Email}", model.Email);
-            return View(model); // Redisplays the form with errors
+            // If we got this far, something failed; redisplay form
+            return View(model);
         }
+
 
         // POST: /Account/Logout
         [HttpPost]

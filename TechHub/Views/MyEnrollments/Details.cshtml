@@ -1,0 +1,69 @@
+﻿@model TeachHub.Models.Course
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+<div>
+    <h4>Course</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CreatedAt)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CreatedAt)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Teacher)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Teacher.Name)
+        </dd>
+    </dl>
+</div>
+
+<div>
+    <h4>Course Videos</h4>
+    <hr />
+    @if (Model.Videos != null && Model.Videos.Any())
+    {
+        <div class="row">
+            @foreach (var video in Model.Videos)
+            {
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">@video.Title</h5>
+                            <p class="card-text">Uploaded: @video.UploadedAt.ToString("yyyy-MM-dd HH:mm")</p>
+                            <video width="100%" controls>
+                                <source src="@video.VideoUrl" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p>No videos available for this course.</p>
+    }
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

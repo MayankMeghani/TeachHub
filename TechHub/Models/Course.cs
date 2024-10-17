@@ -15,7 +15,7 @@ namespace TeachHub.Models
         [Required]
         public DateTime CreatedAt { get; set; } // Date when the course was created
 
-        public int TeacherId { get; set; } // Foreign Key for the Instructor
+        public string TeacherId { get; set; } // Foreign Key for the Instructor
         public Teacher? Teacher { get; set; } // Navigation property
         
         public IEnumerable<Review>? Reviews { get; set; } // Navigation property for Reviews

@@ -1,0 +1,35 @@
+﻿@model IEnumerable<MyEnrollmentViewModel>
+
+@{
+    ViewData["Title"] = "My Enrollments";
+}
+
+<h1>My Enrollments</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Teacher</th>
+            <th>Enrolled On</th>
+            <th>Amount Paid</th>
+            <th></th> <!-- For Details Link -->
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var enrollment in Model)
+        {
+            <tr>
+                <td>@enrollment.Title</td>
+                <td>@enrollment.Description</td>
+                <td>@enrollment.Teacher</td>
+                <td>@enrollment.EnrollDate.ToString("MM/dd/yyyy")</td>
+                <td>$@enrollment.Amount</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@enrollment.CourseId" class="btn btn-info">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

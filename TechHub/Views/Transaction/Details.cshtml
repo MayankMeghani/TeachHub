@@ -1,0 +1,27 @@
+﻿@model CourseDetailsViewModel
+
+<h2>Enrollment Transactions for @Model.Title</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Learner Name</th>
+            <th>Transaction ID</th>
+            <th>Amount</th>
+            <th>Enrollment Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var enrollment in Model.Enrollments)
+        {
+            <tr>
+                <td>@enrollment.LearnerName</td>
+                <td>@enrollment.TransactionId</td>
+                <td>@enrollment.Amount</td>
+                <td>@enrollment.EnrollmentDate.ToShortDateString()</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Index" class="btn btn-secondary">Back to Enrollments</a>
