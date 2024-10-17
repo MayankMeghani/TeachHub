@@ -15,6 +15,7 @@
             <th>Enrolled On</th>
             <th>Amount Paid</th>
             <th></th> <!-- For Details Link -->
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -28,6 +29,9 @@
                 <td>$@enrollment.Amount</td>
                 <td>
                     <a asp-action="Details" asp-route-id="@enrollment.CourseId" class="btn btn-info">Details</a>
+                </td>
+                <td>
+                    <a asp-action="Review" asp-route-id="@enrollment.CourseId">Add Review</a>
                 </td>
             </tr>
         }
