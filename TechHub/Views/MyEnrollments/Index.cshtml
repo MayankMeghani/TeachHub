@@ -5,6 +5,12 @@
 }
 
 <h1>My Enrollments</h1>
+@if (TempData["ReviewExistsError"] != null)
+{
+    <div class="alert alert-warning">
+        @TempData["ReviewExistsError"]
+    </div>
+}
 
 <table class="table table-striped">
     <thead>

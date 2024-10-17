@@ -22,14 +22,27 @@
 
             <!-- Payment fields -->
             <h4>Payment Details</h4>
-            <p>You need to pay: $@ViewBag.Course.Price</p>
-            <div id="card-element"><!-- A Stripe Element will be inserted here. --></div>
+            <p>You need to pay: <strong>$@ViewBag.Course.Price</strong></p>
+
+            <div class="card border-primary mb-3">
+                <div class="card-header text-white bg-primary">
+                    Enter Your Payment Details
+                </div>
+                <div class="card-body">
+                    <div id="card-element" class="p-3" style="border: 1px solid #ced4da; border-radius: 5px;">
+                        <!-- Stripe card element will be inserted here -->
+                    </div>
+                </div>
+            </div>
 
             <input type="hidden" id="stripeToken" name="stripeToken" />
 
-            <button type="submit" class="btn btn-primary">Pay and Enroll Now</button>
+            <div class="d-flex justify-content-between mt-3">
+                <button type="submit" class="btn btn-success btn-lg">Pay and Enroll Now</button>
+                <a asp-action="Details" asp-route-id="@ViewBag.Course.CourseId" class="btn btn-danger btn-lg">Cancel</a>
+            </div>
 
-            <div id="payment-response" style="color: red;">
+            <div id="payment-response" class="mt-3" style="color: red;">
                 @if (!string.IsNullOrEmpty(ViewBag.PaymentError))
                 {
                     <p>@ViewBag.PaymentError</p>

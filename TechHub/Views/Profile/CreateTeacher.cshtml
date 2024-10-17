@@ -8,7 +8,8 @@
 
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="CreateTeacher">
+        <form asp-action="CreateTeacher" enctype="multipart/form-data">
+            <!-- Added enctype -->
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <!-- Hidden field for Id -->
@@ -27,9 +28,9 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="ProfilePicture" class="control-label"></label>
-                <input asp-for="ProfilePicture" class="form-control" />
-                <span asp-validation-for="ProfilePicture" class="text-danger"></span>
+                <label for="ProfilePicture">Profile Picture</label>
+                <input type="file" name="ProfilePicture" class="form-control" accept="image/*" /> <!-- Accept images only -->
+                <span asp-validation-for="ProfilePicture" class="text-danger"></span> <!-- Add validation for ProfilePicture -->
             </div>
 
             <div class="form-group">
@@ -48,3 +49,4 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+

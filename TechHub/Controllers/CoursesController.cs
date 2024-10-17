@@ -80,7 +80,7 @@ namespace TeachHub.Controllers
                             {
                                 using (var stream = file.OpenReadStream())
                                 {
-                                    var videoUrl = await _firebaseService.UploadToFirebase(stream, file.FileName);
+                                    var videoUrl = await _firebaseService.UploadVideo(stream, file.FileName);
 
                                     if (!string.IsNullOrEmpty(videoUrl))
                                     {
@@ -187,7 +187,7 @@ namespace TeachHub.Controllers
                         {
                             using (var stream = file.OpenReadStream())
                             {
-                                var videoUrl = await _firebaseService.UploadToFirebase(stream, file.FileName);
+                                var videoUrl = await _firebaseService.UploadVideo(stream, file.FileName);
 
                                 if (!string.IsNullOrEmpty(videoUrl))
                                 {
@@ -220,7 +220,6 @@ namespace TeachHub.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TeacherId"] = new SelectList(_context.Teachers, "TeacherId", "Bio", course.TeacherId);
             return View(course);
         }
 

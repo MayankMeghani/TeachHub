@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using TeachHub.Data;
 using TeachHub.Models;
 using TeachHub.Services;
-using Microsoft.AspNetCore.Identity; // Add this for UserManager
+using Microsoft.AspNetCore.Identity; 
 
 namespace TeachHub.Controllers.Teachers
 {
@@ -14,14 +14,14 @@ namespace TeachHub.Controllers.Teachers
         private readonly TeachHubContext _context;
         private readonly FirebaseService _firebaseService;
         private readonly ILogger<MyCoursesController> _logger;
-        private readonly UserManager<User> _userManager; // Inject UserManager
+        private readonly UserManager<User> _userManager; 
 
         public MyCoursesController(TeachHubContext context, FirebaseService firebaseService, ILogger<MyCoursesController> logger, UserManager<User> userManager)
         {
             _context = context;
             _firebaseService = firebaseService;
             _logger = logger;
-            _userManager = userManager; // Assign UserManager
+            _userManager = userManager; 
         }
 
         private bool CourseExists(int id)
@@ -37,7 +37,9 @@ namespace TeachHub.Controllers.Teachers
 
             var course = await _context.Courses
                 .Include(c => c.Teacher)
-                .Include(c => c.Videos)  // Include the videos related to this course
+                .Include(c => c.Videos)
+                .Include(c => c.Reviews)
+                .ThenInclude(r => r.Learner)  // Include the learner details for each review
                 .FirstOrDefaultAsync(m => m.CourseId == id);
 
             if (course == null)
@@ -46,14 +48,14 @@ namespace TeachHub.Controllers.Teachers
             }
 
             return View(course);
-        }        // GET: Courses/Create
+        }
 
         // GET: MyCourses
         public async Task<IActionResult> Index()
         {
-            var teacherId = _userManager.GetUserId(User); // Get the logged-in teacher's ID
+            var teacherId = _userManager.GetUserId(User);
             var courses = await _context.Courses
-                .Where(c => c.TeacherId == teacherId) // Filter courses by teacher ID
+                .Where(c => c.TeacherId == teacherId) 
                 .Include(c => c.Teacher)
                 .ToListAsync();
 
@@ -63,27 +65,56 @@ namespace TeachHub.Controllers.Teachers
         // GET: MyCourses/Create
         public async Task<IActionResult> Create()
         {
-            var user= await _userManager.GetUserAsync(User);
+            // Get the currently logged-in user
+            var user = await _userManager.GetUserAsync(User);
 
-            // Pass the TeacherId to the view
+            // Check if the user's profile is complete
+            if (user == null || !user.IsProfileComplete)
+            {
+                // Add an error message to TempData
+                TempData["ProfileIncompleteError"] = "Your profile is incomplete. Please complete your profile before creating a course.";
+
+                // Redirect to the Index page or Profile completion page
+                return RedirectToAction("Index"); // Or redirect to "CompleteProfile" if you have that page
+            }
+
+            // Create a new course object
             var course = new Course
             {
-                TeacherId = user.Id, // Set the TeacherId for the course
-                CreatedAt = DateTime.UtcNow,
+                TeacherId = user.Id,
+                CreatedAt = DateTime.Now,
             };
 
+            // Return the Create view
             return View(course);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CourseId,Title,Description,Price,CreatedAt,TeacherId")] Course course, List<IFormFile> videoFiles)
         {
+            // Check if a course with the same title exists for the teacher
+            var existingCourse = await _context.Courses
+                .FirstOrDefaultAsync(c => c.Title == course.Title && c.TeacherId == course.TeacherId);
+
+            if (existingCourse != null)
+            {
+                ModelState.AddModelError("Title", "A course with the same title already exists.");
+                return View(course); // Return to view if duplicate course exists
+            }
+
+            // Ensure at least one video is uploaded
+            if (videoFiles == null || !videoFiles.Any())
+            {
+                ModelState.AddModelError("", "Please upload at least one video.");
+                return View(course); // Return to view if no video is uploaded
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
-
                     _context.Add(course);
                     await _context.SaveChangesAsync();
                     _logger.LogInformation($"Course '{course.Title}' created with ID {course.CourseId}.");
@@ -95,11 +126,12 @@ namespace TeachHub.Controllers.Teachers
                         if (file != null && file.Length > 0)
                         {
                             _logger.LogInformation($"Uploading video file '{file.FileName}'.");
+
                             try
                             {
                                 using (var stream = file.OpenReadStream())
                                 {
-                                    var videoUrl = await _firebaseService.UploadToFirebase(stream, file.FileName);
+                                    var videoUrl = await _firebaseService.UploadVideo(stream, file.FileName);
 
                                     if (!string.IsNullOrEmpty(videoUrl))
                                     {
@@ -143,6 +175,7 @@ namespace TeachHub.Controllers.Teachers
                         _context.Videos.AddRange(uploadedVideos);
                         await _context.SaveChangesAsync();
                         _logger.LogInformation($"All videos processed and saved for course '{course.Title}'.");
+
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -152,18 +185,15 @@ namespace TeachHub.Controllers.Teachers
                     ModelState.AddModelError("", "An error occurred while creating the course. Please try again.");
                 }
             }
-            else
+
+            // Log validation errors if the model state is invalid
+            var errors = ModelState.Values.SelectMany(v => v.Errors);
+            foreach (var error in errors)
             {
-                // Log the invalid model state with the errors for debugging purposes
-                var errors = ModelState.Values.SelectMany(v => v.Errors);
-                foreach (var error in errors)
-                {
-                    _logger.LogWarning($"Model validation error: {error.ErrorMessage}");
-                }
+                _logger.LogWarning($"Model validation error: {error.ErrorMessage}");
             }
 
-            // If the model is invalid, return to the same view with the course object
-            return View(course);
+            return View(course); // Return the view if the model is invalid
         }
 
         // GET: MyCourses/Edit/5
@@ -196,11 +226,23 @@ namespace TeachHub.Controllers.Teachers
                 return NotFound();
             }
 
+            var existingCourse = await _context.Courses
+                .FirstOrDefaultAsync(c => c.Title == course.Title && c.TeacherId == course.TeacherId && c.CourseId != course.CourseId);
+
+            if (existingCourse != null)
+            {
+                ModelState.AddModelError("Title", "A course with the same title already exists.");
+                var courseWithVideos = await _context.Courses
+                    .Include(c => c.Videos)  // Ensure we include videos in case of validation error
+                    .FirstOrDefaultAsync(c => c.CourseId == id);
+                    return View(courseWithVideos);
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
-            
+                    // Update the course
                     _context.Update(course);
                     await _context.SaveChangesAsync();
 
@@ -209,6 +251,7 @@ namespace TeachHub.Controllers.Teachers
                     {
                         var videosToDelete = _context.Videos.Where(v => videoIdsToRemove.Contains(v.VideoId));
                         _context.Videos.RemoveRange(videosToDelete);
+                        await _context.SaveChangesAsync();
                     }
 
                     // Handle new video uploads
@@ -218,7 +261,7 @@ namespace TeachHub.Controllers.Teachers
                         {
                             using (var stream = file.OpenReadStream())
                             {
-                                var videoUrl = await _firebaseService.UploadToFirebase(stream, file.FileName);
+                                var videoUrl = await _firebaseService.UploadVideo(stream, file.FileName);
 
                                 if (!string.IsNullOrEmpty(videoUrl))
                                 {
@@ -238,7 +281,6 @@ namespace TeachHub.Controllers.Teachers
 
                     await _context.SaveChangesAsync();
                 }
-
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!CourseExists(course.CourseId))
@@ -250,11 +292,13 @@ namespace TeachHub.Controllers.Teachers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TeacherId"] = new SelectList(_context.Teachers, "TeacherId", "Name", course.TeacherId);
+
             return View(course);
         }
+
 
         // GET: MyCourses/Delete/5
         public async Task<IActionResult> Delete(int? id)

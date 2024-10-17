@@ -5,7 +5,12 @@
 }
 
 <h1>Details</h1>
-
+@if (TempData["ProfileIncompleteError"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ProfileIncompleteError"]
+    </div>
+}
 <div>
     <h4>Course</h4>
     <hr />
