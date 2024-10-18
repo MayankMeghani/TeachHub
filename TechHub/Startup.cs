@@ -59,21 +59,20 @@ namespace TeachHub
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
+                app.UseStatusCodePagesWithReExecute("/Home/HandleError/{0}");
             }
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
-            app.UseAuthentication(); // Identity authentication
+            app.UseAuthentication();
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
-
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
-              });
-
+            });
         }
+
     }
 }

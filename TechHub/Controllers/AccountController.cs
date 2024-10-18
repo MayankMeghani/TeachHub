@@ -26,8 +26,9 @@ namespace TeachHub.Controllers
         }
         // GET: /Account/Login
         [HttpGet]
-        public IActionResult Login()
+        public async Task<IActionResult> Login()
         {
+            await _signInManager.SignOutAsync();
             return View();
         }
 
@@ -60,8 +61,10 @@ namespace TeachHub.Controllers
 
         // GET: /Account/Register
         [HttpGet]
-        public IActionResult Register()
+        public async Task<IActionResult> Register()
         {
+            await _signInManager.SignOutAsync();
+
             return View();
         }
 

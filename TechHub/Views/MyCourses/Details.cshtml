@@ -1,41 +1,150 @@
-﻿@model TeachHub.Models.Course
-@{
-    ViewData["Title"] = "Details";
-}
+﻿@model Course
 
-<h1>Details</h1>
-<div>
-    <h4>Course</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedAt)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CreatedAt)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Teacher)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Teacher.Name)
-        </dd>
-    </dl>
-</div>
+<style>
+    .course-container {
+        max-width: 1000px;
+        margin: 50px auto;
+    }
 
-<div>
+    .video-card {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .video-card .card-body {
+            padding: 20px;
+            background-color: #fefefe;
+        }
+
+        .video-card h5 {
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .video-card p {
+            font-size: 0.9rem;
+            color: #777;
+        }
+
+    .video-player {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+
+    .review-list {
+        margin-top: 25px;
+        background-color: #f7f7f7;
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    .review-list-item {
+        border-bottom: 1px solid #e1e1e1;
+        padding: 15px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+        .review-list-item:last-child {
+            border-bottom: none;
+        }
+
+        .review-list-item strong {
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .review-list-item p {
+            margin-top: 10px;
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+    .review-rating {
+        font-size: 1rem;
+        color: #FFD700;
+    }
+
+        .review-rating .badge {
+            font-size: 1rem;
+            padding: 5px 10px;
+            background-color: #FFD700;
+            color: #fff;
+            border-radius: 5px;
+        }
+
+    .no-content {
+        font-size: 1.1rem;
+        color: #999;
+        text-align: center;
+        margin-top: 25px;
+    }
+
+    .action-buttons {
+        margin-top: 40px;
+        text-align: center;
+    }
+
+        .action-buttons a {
+            margin-right: 15px;
+            padding: 10px 20px;
+        }
+
+        .action-buttons .btn-edit {
+            background-color: #17a2b8;
+            color: #fff;
+        }
+
+            .action-buttons .btn-edit:hover {
+                background-color: #138496;
+            }
+
+        .action-buttons .btn-back {
+            background-color: #6c757d;
+            color: #fff;
+        }
+
+            .action-buttons .btn-back:hover {
+                background-color: #5a6268;
+            }
+
+    .modal-fullscreen .modal-dialog {
+        max-width: 100vw;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+    }
+
+    .modal-fullscreen .modal-content {
+        height: 100%;
+        border-radius: 0;
+    }
+
+    .modal-fullscreen .modal-body {
+        padding: 0;
+    }
+
+    .modal-fullscreen video {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+    }
+</style>
+
+<div class="course-container">
+    <!-- Course Videos Section -->
     <h4>Course Videos</h4>
     <hr />
     @if (Model.Videos != null && Model.Videos.Any())
@@ -43,15 +152,41 @@
         <div class="row">
             @foreach (var video in Model.Videos)
             {
-                <div class="col-md-4 mb-3">
-                    <div class="card">
+                <div class="col-md-4 mb-4">
+                    <div class="card video-card">
                         <div class="card-body">
                             <h5 class="card-title">@video.Title</h5>
-                            <p class="card-text">Uploaded: @video.UploadedAt.ToString("yyyy-MM-dd HH:mm")</p>
-                            <video width="100%" controls>
+                            <p class="card-text text-muted">
+                                Uploaded: <span class="badge badge-light">@video.UploadedAt.ToString("yyyy-MM-dd HH:mm")</span>
+                            </p>
+                            <video class="video-player" controls>
                                 <source src="@video.VideoUrl" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>
+                            <!-- View in Modal Button -->
+                           @*  <button type="button" class="btn btn-outline-primary btn-sm mt-2" data-toggle="modal" data-target="#videoModal-@video.VideoId">
+                                View Full Screen
+                            </button> *@
+
+                            <!-- Modal for Full-Screen Video -->
+                            <div class="modal fade modal-fullscreen" id="videoModal-@video.VideoId" tabindex="-1" aria-labelledby="videoModalLabel-@video.VideoId" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="videoModalLabel-@video.VideoId">@video.Title</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <video class="w-100 h-100" controls>
+                                                <source src="@video.VideoUrl" type="video/mp4">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -60,11 +195,35 @@
     }
     else
     {
-        <p>No videos available for this course.</p>
+        <p class="no-content">No videos available for this course.</p>
     }
-</div>
 
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.CourseId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <!-- Course Reviews Section -->
+    <h4 class="mt-5">Course Reviews</h4>
+    <hr />
+    @if (Model.Reviews != null && Model.Reviews.Any())
+    {
+        <div class="review-list">
+            @foreach (var review in Model.Reviews)
+            {
+                <div class="review-list-item">
+                    <strong>@review.Learner.Name</strong>
+                    <span class="float-right text-muted">@review.CreatedAt.ToString("yyyy-MM-dd HH:mm")</span>
+                    <br />
+                    <span class="review-rating badge badge-warning">@review.Rating/5 ★</span>
+                    <p class="mt-2">@review.Content</p>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p class="no-content">No reviews available for this course.</p>
+    }
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+        <a asp-action="Edit" asp-route-id="@Model?.CourseId" class="btn btn-edit">Edit Course</a>
+        <a asp-action="Index" class="btn btn-back">Back to List</a>
+    </div>
 </div>

@@ -69,10 +69,21 @@ namespace TeachHub.Controllers.learner
         }
         public async Task<IActionResult> Review(int id)
         {
-            // Await the result to get the user object
+            // Get the currently logged-in user
             var user = await _userManager.GetUserAsync(User);
 
-            // Create a new Review object
+            // Check if the user has already reviewed this course
+            var existingReview = await _context.Reviews
+                .FirstOrDefaultAsync(r => r.CourseId == id && r.LearnerId == user.Id);
+
+            if (existingReview != null)
+            {
+                // If the review already exists, return an error or redirect to an edit page
+                TempData["ReviewExistsError"] = "You have already reviewed this course.";
+                return RedirectToAction("Index");
+            }
+
+            // If no review exists, create a new Review object
             var review = new Review
             {
                 CourseId = id,
@@ -82,6 +93,7 @@ namespace TeachHub.Controllers.learner
 
             return View(review); // Pass the review object to the view
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

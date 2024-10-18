@@ -1,39 +1,198 @@
 ﻿@model TeachHub.Models.Learner
-
+@* 
 @{
-    ViewData["Title"] = "EditLearner";
+    ViewData["Title"] = "Edit Learner";
 }
 
-<h1>EditLearner</h1>
+<style>
+    .edit-learner-container {
+        border: 2px solid #ccc;
+        padding: 20px;
+        max-width: 600px;
+        margin: 50px auto;
+        background-color: #f9f9f9;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
-<h4>Learner</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="EditLearner">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="LearnerId" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ProfilePicture" class="control-label"></label>
-                <input asp-for="ProfilePicture" class="form-control" />
-                <span asp-validation-for="ProfilePicture" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+    .edit-learner-container h1, .edit-learner-container h4 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .form-group {
+        position: relative;
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        position: absolute;
+        top: -10px;
+        left: 10px;
+        font-size: 12px;
+        background: #f9f9f9;
+        padding: 0 5px;
+        color: #333;
+    }
+
+    .form-control, .form-control-file {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        width: 100%;
+    }
+
+    button[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+    }
+
+    .text-danger {
+        margin-top: 5px;
+        font-size: 0.9em;
+    }
+</style>
+
+<div class="edit-learner-container">
+    <h1>Edit Learner</h1>
+    <h4>Update Learner Details</h4>
+    <hr />
+
+    <form asp-action="EditLearner" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <input type="hidden" asp-for="LearnerId" />
+
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" placeholder="Enter learner's name" required />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="ProfilePicture">Profile Picture</label>
+            @if (!string.IsNullOrEmpty(Model.ProfilePicture))
+            {
+                <div class="mb-2">
+                    <img src="@Model.ProfilePicture" alt="Current Profile Picture" class="img-fluid rounded border" style="max-height: 200px; object-fit: cover;" />
+                </div>
+            }
+            <input type="file" name="ProfilePicture" class="form-control-file" accept="image/*" />
+            <span asp-validation-for="ProfilePicture" class="text-danger"></span>
+        </div>
+
+        <div class="form-group text-center">
+            <input type="submit" value="Save Changes" class="btn btn-success" />
+        </div>
+    </form>
+
+    <div class="text-center mt-4">
+        <a asp-action="Index" class="btn btn-link">← Back to List</a>
+    </div>
+</div> *@
+
+
+@{
+    ViewData["Title"] = "Edit Learner";
+}
+
+<style>
+    .edit-learner-container {
+        border: 2px solid #ccc;
+        padding: 20px;
+        max-width: 600px;
+        margin: 50px auto;
+        background-color: rgba(249, 249, 249, 0.9); /* Semi-transparent for contrast */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px; /* Slight rounding of corners */
+    }
+
+    .edit-learner-container h1, 
+    .edit-learner-container h4 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .form-group {
+        position: relative;
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        position: absolute;
+        top: -10px;
+        left: 10px;
+        font-size: 12px;
+        background: rgba(249, 249, 249, 0.9);
+        padding: 0 5px;
+        color: #333;
+    }
+
+    .form-control, 
+    .form-control-file {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        width: 100%;
+    }
+
+    button[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+    }
+
+    .text-danger {
+        margin-top: 5px;
+        font-size: 0.9em;
+    }
+
+    .back-button {
+        margin-top: 20px; /* Spacing for better visibility */
+    }
+</style>
+
+<div class="edit-learner-container">
+    <h1>Edit Learner</h1>
+    <h4>Update Learner Details</h4>
+    <hr />
+
+    <form asp-action="EditLearner" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <input type="hidden" asp-for="LearnerId" />
+
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" placeholder="Enter learner's name" required />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="ProfilePicture">Profile Picture</label>
+            @if (!string.IsNullOrEmpty(Model.ProfilePicture))
+            {
+                <div class="mb-2">
+                    <img src="@Model.ProfilePicture" alt="Current Profile Picture" class="img-fluid rounded border" style="max-height: 200px; object-fit: cover;" />
+                </div>
+            }
+            <input type="file" name="ProfilePicture" class="form-control-file" accept="image/*" />
+            <span asp-validation-for="ProfilePicture" class="text-danger"></span>
+        </div>
+
+        <div class="form-group text-center">
+            <input type="submit" value="Save Changes" class="btn btn-success" />
+        </div>
+    </form>
+
+    <div class="text-center back-button">
+        <a asp-action="Index" class="btn btn-secondary">← Back to List</a>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @* @await Html.RenderPartialAsync("_ValidationScriptsPartial"); *@
 }
+

@@ -1,55 +1,87 @@
 ﻿@model User
 
-<h2>Your Profile</h2>
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">Your Profile</h2>
+            <span class="badge badge-light">@User.Identity.Name</span>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4 text-center mb-4">
+                    <div class="profile-picture-container mb-3">
+                        @if (Model.Teacher?.ProfilePicture != null || Model.Learner?.ProfilePicture != null)
+                        {
+                            <img src="@Url.Content(Model.Teacher?.ProfilePicture ?? Model.Learner?.ProfilePicture)"
+                                 alt="Profile Picture"
+                                 class="img-fluid rounded-circle shadow-sm border border-primary"
+                                 style="width: 200px; height: 200px;" />
+                        }
+                        else
+                        {
+                            <img src="~/images/default-profile.png"
+                                 alt="Default Profile Picture"
+                                 class="img-fluid rounded-circle shadow-sm border border-primary"
+                                 style="width: 200px; height: 200px;" />
+                            <p class="text-muted mt-2">Not uploaded</p>
+                        }
+                    </div>
+                </div>
 
-<p>
-    <strong>Email:</strong> @Model.Email
-</p>
+                <div class="col-md-8">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Email:</strong> <span>@Model.Email</span>
+                        </li>
 
-@if (!Model.IsProfileComplete)
-{
-    <p>
-        <strong>Is Profile Complete:</strong> No
-    </p>
-    @if (User.IsInRole("Teacher"))
-    {
-        <a class="btn btn-primary" asp-controller="Profile" asp-action="CreateTeacher">Complete Your Profile</a>
-    }
-    else if (User.IsInRole("Learner"))
-    {
-        <a class="btn btn-primary" asp-controller="Profile" asp-action="CreateLearner">Complete Your Profile</a>
-    }
-}
-else
-{
-    <p>
-        <strong>Name:</strong> @Model.Learner?.Name @Model.Teacher?.Name
-    </p>
+                        @if (Model.IsProfileComplete)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <strong>Name:</strong> <span>@Model.Learner?.Name  @Model.Teacher?.Name</span>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center text-danger">
+                                <strong>Profile Complete:</strong> <span>No</span>
+                            </li>
+                        }
+                    </ul>
 
-    <p>
-        <strong>Profile Picture:</strong>
-        @if (Model.Teacher?.ProfilePicture != null || Model.Learner?.ProfilePicture != null)
-        {
-            <img src="@Url.Content(Model.Teacher?.ProfilePicture ?? Model.Learner?.ProfilePicture)" alt="Profile Picture" class="img-thumbnail" style="width: 150px; height: 150px;" />
-        }
-        else
-        {
-            <span>Not uploaded</span>
-        }
-    </p>
+                    @if (Model.IsProfileComplete && User.IsInRole("Teacher") && Model.Teacher != null)
+                    {
+                        <div class="mt-4">
+                            <p class="lead">
+                                <strong>Bio:</strong> @Model.Teacher.Bio
+                            </p>
+                        </div>
+                    }
 
-    @if (User.IsInRole("Teacher") && Model.Teacher != null)
-    {
-        <p>
-            <strong>Bio:</strong> @Model.Teacher.Bio
-        </p>
-
-        <a class="btn btn-primary" asp-controller="profile" asp-action="EditTeacher" asp-route-id="@Model.Teacher.TeacherId">Edit Profile</a>
-    }
-    @if (User.IsInRole("Learner") && Model.Learner != null)
-    {
-
-        <a class="btn btn-primary" asp-controller="Profile" asp-action="EditLearner" asp-route-id="@Model.Learner.LearnerId">Edit Profile</a>
-    }
-
-}
+                    <div class="mt-4">
+                        @if (!Model.IsProfileComplete)
+                        {
+                            <a class="btn btn-warning btn-lg btn-block" asp-controller="Profile" asp-action="@(User.IsInRole("Teacher") ? "CreateTeacher" : "CreateLearner")">
+                                <i class="fas fa-user-edit"></i> Complete Your Profile
+                            </a>
+                        }
+                        else
+                        {
+                            @if (User.IsInRole("Teacher") && Model.Teacher != null)
+                            {
+                                <a class="btn btn-primary btn-lg btn-block" asp-controller="Profile" asp-action="EditTeacher" asp-route-id="@Model.Teacher.TeacherId">
+                                    <i class="fas fa-user-edit"></i> Edit Profile
+                                </a>
+                            }
+                            @if (User.IsInRole("Learner") && Model.Learner != null)
+                            {
+                                <a class="btn btn-primary btn-lg btn-block" asp-controller="Profile" asp-action="EditLearner" asp-route-id="@Model.Learner.LearnerId">
+                                    <i class="fas fa-user-edit"></i> Edit Profile
+                                </a>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

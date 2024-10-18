@@ -75,6 +75,17 @@ namespace TeachHub.Controllers.learner
         {
             var user = await _userManager.GetUserAsync(User);
 
+            // Check if the user's profile is complete
+            if (user == null || !user.IsProfileComplete)
+            {
+                // Add an error message to TempData
+                TempData["ProfileIncompleteError"] = "Your profile is incomplete. Please complete your profile before enrolling in a course.";
+
+                // Redirect to the Index page or Profile completion page
+                return RedirectToAction("Details", "AvailableCourses", new { id = CourseId });
+            }
+
+
             ViewBag.Course = _context.Courses.Find(CourseId);
             ViewBag.LearnerId = user.Id;
             ViewBag.StripePublishableKey = _configuration["Stripe:PublishableKey"];
@@ -109,9 +120,9 @@ namespace TeachHub.Controllers.learner
                 {
                     CourseId = model.CourseId,
                     LearnerId = model.LearnerId,
-                    TransactionId = chargeId, // Store charge ID
-                    Amount = course.Price, // Use the course price for the enrollment
-                    TransactionDate = DateTime.Now // Assign the current date and time
+                    TransactionId = chargeId, 
+                    Amount = course.Price, 
+                    TransactionDate = DateTime.Now 
                 };
 
                 _context.Enrollments.Add(enrollment);

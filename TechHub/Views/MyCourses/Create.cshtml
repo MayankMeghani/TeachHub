@@ -1,62 +1,118 @@
 ﻿@model TeachHub.Models.Course
+
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Course";
 }
-<h1>Create</h1>
-<h4>Course</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create" enctype="multipart/form-data" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <!-- Title Field -->
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
+<style>
+    .create-course-container {
+        border: 2px solid #ccc;
+        padding: 20px;
+        max-width: 600px;
+        margin: 50px auto;
+        background-color: rgba(249, 249, 249, 0.9); /* Semi-transparent for contrast */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px; /* Slight rounding of corners */
+    }
 
-            <!-- Description Field -->
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
+    .create-course-container h1,
+    .create-course-container h4 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+    }
 
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
+    .form-group {
+        position: relative;
+        margin-bottom: 15px;
+    }
 
-            <!-- CreatedAt Field -->
-            <div class="form-group">
-                <label asp-for="CreatedAt" class="control-label"></label>
-                <input asp-for="CreatedAt" class="form-control" />
-                <span asp-validation-for="CreatedAt" class="text-danger"></span>
-            </div>
+    .form-group label {
+        position: absolute;
+        top: -10px;
+        left: 10px;
+        font-size: 12px;
+        background: rgba(249, 249, 249, 0.9);
+        padding: 0 5px;
+        color: #333;
+    }
 
-            <!-- Hidden TeacherId Field -->
-            <input type="hidden" asp-for="TeacherId" />
+    .form-control,
+    .form-control-file {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        width: 100%;
+    }
 
-            <!-- Video Upload Field -->
-            <div class="form-group">
-                <label for="videoFiles">Upload Videos:</label>
-                <input type="file" name="videoFiles" multiple />
-            </div>
+    button[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+    }
 
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+    .text-danger {
+        margin-top: 5px;
+        font-size: 0.9em;
+    }
+
+    .back-button {
+        margin-top: 20px; /* Spacing for better visibility */
+        text-align: center;
+    }
+</style>
+
+<div class="create-course-container">
+    <h1>Create Course</h1>
+    <h4>Fill in the Course Details</h4>
+    <hr />
+
+    <form asp-action="Create" enctype="multipart/form-data" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <!-- Title Field -->
+        <div class="form-group">
+            <label asp-for="Title" class="control-label">Course Title</label>
+            <input asp-for="Title" class="form-control" placeholder="Enter course title" required />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <!-- Description Field -->
+        <div class="form-group">
+            <label asp-for="Description" class="control-label">Course Description</label>
+            <input asp-for="Description" class="form-control" placeholder="Enter course description" required />
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <!-- Price Field -->
+        <div class="form-group">
+            <label asp-for="Price" class="control-label">Course Price</label>
+            <input asp-for="Price" class="form-control" placeholder="Enter course price" required />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+
+        <input type="hidden" asp-for="CreatedAt" />
+
+        <!-- Hidden TeacherId Field -->
+        <input type="hidden" asp-for="TeacherId" />
+
+        <!-- Video Upload Field -->
+        <div class="form-group">
+            <label for="videoFiles" class="control-label">Upload Videos:</label>
+            <input type="file" name="videoFiles" class="form-control-file" multiple />
+            @* <span asp-validation-for="videoFiles" class="text-danger"></span> *@
+        </div>
+
+        <div class="form-group text-center">
+            <input type="submit" value="Create" class="btn btn-success" />
+        </div>
+    </form>
+
+    <div class="back-button">
+        <a asp-action="Index" class="btn btn-secondary">← Back to List</a>
     </div>
 </div>
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @* @await Html.RenderPartialAsync("_ValidationScriptsPartial"); *@
 }

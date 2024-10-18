@@ -1,69 +1,94 @@
 ﻿@model TeachHub.Models.Course
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Course Details";
 }
 
-<h1>Details</h1>
-<div>
-    <h4>Course</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedAt)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CreatedAt)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Teacher)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Teacher.Name)
-        </dd>
-    </dl>
-</div>
+<div class="container mt-5">
+    <h1 class="mb-4 text-center display-4">Course Details</h1>
 
-<div>
-    <h4>Course Videos</h4>
-    <hr />
-    @if (Model.Videos != null && Model.Videos.Any())
-    {
-        <div class="row">
-            @foreach (var video in Model.Videos)
-            {
-                <div class="col-md-4 mb-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">@video.Title</h5>
-                            <p class="card-text">Uploaded: @video.UploadedAt.ToString("yyyy-MM-dd HH:mm")</p>
-                            <video width="100%" controls>
-                                <source src="@video.VideoUrl" type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>
+    <div class="card mb-4 shadow-lg border-light">
+        <div class="card-header bg-primary text-white text-center">
+            <h4 class="mb-0">Course Information</h4>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3 fw-bold">Title:</dt>
+                <dd class="col-sm-9 fs-5">@Html.DisplayFor(model => model.Title)</dd>
+
+                <dt class="col-sm-3 fw-bold">Description:</dt>
+                <dd class="col-sm-9 fs-5">@Html.DisplayFor(model => model.Description)</dd>
+
+                <dt class="col-sm-3 fw-bold">Created At:</dt>
+                <dd class="col-sm-9 fs-5">@Html.DisplayFor(model => model.CreatedAt)</dd>
+
+                <dt class="col-sm-3 fw-bold">Teacher:</dt>
+                <dd class="col-sm-9 fs-5">@Html.DisplayFor(model => model.Teacher.Name)</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <h4 class="text-primary">Course Videos</h4>
+        <hr class="bg-primary" />
+        @if (Model.Videos != null && Model.Videos.Any())
+        {
+            <div class="row g-4">
+                @foreach (var video in Model.Videos)
+                {
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="card shadow-lg h-100">
+                            <div class="position-relative">
+                                <video class="card-img-top rounded-top" controls>
+                                    <source src="@video.VideoUrl" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                                <div class="position-absolute top-0 start-0 bg-danger text-white p-2 rounded-end">
+                                    <strong>New</strong>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">@video.Title</h5>
+                                <p class="card-text text-muted">Uploaded: @video.UploadedAt.ToString("yyyy-MM-dd HH:mm")</p>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#videoModal-@video.VideoId">
+                                    Watch in Fullscreen
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="videoModal-@video.VideoId" tabindex="-1" aria-labelledby="videoModalLabel-@video.VideoId" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="videoModalLabel-@video.VideoId">@video.Title</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <video class="w-100" controls>
+                                            <source src="@video.VideoUrl" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            }
-        </div>
-    }
-    else
-    {
-        <p>No videos available for this course.</p>
-    }
-</div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning" role="alert">
+                No videos available for this course.
+            </div>
+        }
+    </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+    <div class="d-flex justify-content-between mb-4">
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        @* <form asp-action="Enroll" method="get">
+            <input type="hidden" name="courseId" value="@Model.CourseId" />
+            <button type="submit" class="btn btn-success">Enroll Now</button>
+        </form> *@
+    </div>
 </div>

@@ -4,49 +4,93 @@
     ViewData["Title"] = "Review";
 }
 
-<h1>Review</h1>
+<style>
+    .review-container {
+        border: 2px solid #ccc;
+        padding: 20px;
+        max-width: 400px;
+        margin: 50px auto;
+        background-color: #f9f9f9;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
-<h4>Review</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Review">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        .review-container h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
 
-            <div class="form-group">
-                <label asp-for="Content" class="control-label"></label>
-                <input asp-for="Content" class="form-control" />
-                <span asp-validation-for="Content" class="text-danger"></span>
-            </div>
+    .form-group {
+        position: relative;
+        margin-bottom: 15px;
+    }
 
-            <div class="form-group">
-                <label asp-for="Rating" class="control-label"></label>
-                <input asp-for="Rating" class="form-control" />
-                <span asp-validation-for="Rating" class="text-danger"></span>
-            </div>
+        .form-group label {
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            font-size: 12px;
+            background: #f9f9f9;
+            padding: 0 5px; /* Add padding for label background */
+            color: #333;
+        }
 
-            @* Pass the CourseId as a hidden field *@
-            <input type="hidden" asp-for="CourseId" />
+    .form-control {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        width: 100%;
+    }
 
-            @* Pass the LearnerId as a hidden field *@
-            <input type="hidden" asp-for="LearnerId" />
+    button[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+    }
 
-            @* Pass the CreatedAt as a hidden field (if it's set programmatically) *@
-            <input type="hidden" asp-for="CreatedAt" />
+    .text-danger {
+        margin-top: 5px;
+        font-size: 0.9em;
+    }
+</style>
 
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+<div class="review-container">
+    <h1>Review</h1>
+    <hr />
+
+    <!-- Display general errors -->
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <form asp-action="Review">
+        <div class="form-group">
+            <label asp-for="Content" class="control-label"></label>
+            <input asp-for="Content" class="form-control" />
+            <span asp-validation-for="Content" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Rating" class="control-label"></label>
+            <input asp-for="Rating" class="form-control" />
+            <span asp-validation-for="Rating" class="text-danger"></span>
+        </div>
+
+        @* Pass the CourseId as a hidden field *@
+        <input type="hidden" asp-for="CourseId" />
+
+        @* Pass the LearnerId as a hidden field *@
+        <input type="hidden" asp-for="LearnerId" />
+
+        @* Pass the CreatedAt as a hidden field (if it's set programmatically) *@
+        <input type="hidden" asp-for="CreatedAt" />
+
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<div class="text-center mt-3">
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @* @await Html.RenderPartialAsync("_ValidationScriptsPartial"); *@
 }

@@ -1,43 +1,96 @@
 ﻿@model RegisterViewModel
 
-<form asp-action="Register" method="post">
-    @if (!ViewData.ModelState.IsValid)
-    {
-        <div class="text-danger">
-            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-            {
-                <p>@error.ErrorMessage</p>
-            }
-        </div>
+<style>
+    .login-container {
+        border: 2px solid #ccc;
+        padding: 20px;
+        max-width: 400px;
+        margin: 50px auto;
+        background-color: #f9f9f9;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
-    <div class="form-group">
-        <label asp-for="Email"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
+    .login-container h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+    }
 
-    <div class="form-group">
-        <label asp-for="Password"></label>
-        <input asp-for="Password" type="password" class="form-control" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
+    .form-group {
+        position: relative;
+        margin-bottom: 15px;
+    }
 
-    <div class="form-group">
-        <label asp-for="ConfirmPassword"></label>
-        <input asp-for="ConfirmPassword" type="password" class="form-control" />
-        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-    </div>
+    .form-group label {
+        position: absolute;
+        top: -10px;
+        left: 10px;
+        font-size: 12px;
+        background: #f9f9f9;
+        padding: 0 5px; /* Add padding for label background */
+        color: #333;
+    }
 
-    <!-- Role Selection -->
-    <div class="form-group">
-        <label asp-for="Role"></label>
-        <select asp-for="Role" class="form-control">
-            <option value="Learner">Learner</option>
-            <option value="Teacher">Teacher</option>
-        </select>
-        <span asp-validation-for="Role" class="text-danger"></span>
-    </div>
+    .form-control {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        width: 100%;
+    }
 
-    <button type="submit" class="btn btn-primary">Register</button>
-</form>
+    button[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+    }
+
+    .text-danger {
+        margin-top: 5px;
+        font-size: 0.9em;
+    }
+</style>
+
+<div class="login-container">
+    <h2>Register</h2>
+    <form asp-action="Register" method="post">
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="text-danger">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <p>@error.ErrorMessage</p>
+                }
+            </div>
+        }
+
+        <div class="form-group">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Password"></label>
+            <input asp-for="Password" type="password" class="form-control" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="ConfirmPassword"></label>
+            <input asp-for="ConfirmPassword" type="password" class="form-control" />
+            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+        </div>
+
+        <!-- Role Selection -->
+        <div class="form-group">
+            <label asp-for="Role"></label>
+            <select asp-for="Role" class="form-control">
+                <option value="Learner">Learner</option>
+                <option value="Teacher">Teacher</option>
+            </select>
+            <span asp-validation-for="Role" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+</div>
