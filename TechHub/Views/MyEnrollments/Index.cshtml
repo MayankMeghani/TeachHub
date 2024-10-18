@@ -1,45 +1,167 @@
-﻿@model IEnumerable<MyEnrollmentViewModel>
+﻿@* @model IEnumerable<MyEnrollmentViewModel>
+@{
+    ViewData["Title"] = "My Enrollments";
+}
+
+<div class="container my-5">
+    <h1 class="display-4 mb-4 text-center">@ViewData["Title"]</h1>
+
+    @if (TempData["ReviewExistsError"] != null)
+    {
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            @TempData["ReviewExistsError"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">Title</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Teacher</th>
+                    <th scope="col">Enrolled On</th>
+                    <th scope="col">Amount Paid</th>
+                    <th scope="col">Details</th>
+                    <th scope="col">Review</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var enrollment in Model)
+                {
+                    <tr>
+                        <td>@enrollment.Title</td>
+                        <td>@enrollment.Description</td>
+                        <td>@enrollment.Teacher</td>
+                        <td>@enrollment.EnrollDate.ToString("MM/dd/yyyy")</td>
+                        <td>$@enrollment.Amount</td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@enrollment.CourseId" class="btn btn-info text-white">Details</a>
+                        </td>
+                        <td>
+                            <a asp-action="Review" asp-route-id="@enrollment.CourseId" class="btn btn-primary">Add Review</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+ *@
+
+ @model IEnumerable<MyEnrollmentViewModel>
 
 @{
     ViewData["Title"] = "My Enrollments";
 }
 
-<h1>My Enrollments</h1>
-@if (TempData["ReviewExistsError"] != null)
-{
-    <div class="alert alert-warning">
-        @TempData["ReviewExistsError"]
+<div class="container my-5">
+    <h1 class="display-4 mb-4 text-center font-weight-bold">@ViewData["Title"]</h1>
+
+    @if (TempData["ReviewExistsError"] != null)
+    {
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            @TempData["ReviewExistsError"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow-lg" style="border-radius: 12px;">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">Title</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Teacher</th>
+                            <th scope="col">Enrolled On</th>
+                            <th scope="col">Amount Paid</th>
+                            <th scope="col" class="text-center">Details</th>
+                            <th scope="col" class="text-center">Review</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var enrollment in Model)
+                        {
+                            <tr>
+                                <td>@enrollment.Title</td>
+                                <td>@enrollment.Description</td>
+                                <td>@enrollment.Teacher</td>
+                                <td>@enrollment.EnrollDate.ToString("MM/dd/yyyy")</td>
+                                <td>$@enrollment.Amount</td>
+                                <td class="text-center">
+                                    <a asp-action="Details" asp-route-id="@enrollment.CourseId" class="btn btn-success btn-sm" data-toggle="tooltip" title="View Course Details">
+                                        Details
+                                    </a>
+                                </td>
+                                <td class="text-center">
+                                    <a asp-action="Review" asp-route-id="@enrollment.CourseId" class="btn btn-primary btn-sm" data-toggle="tooltip" title="Add Review">
+                                        Add Review
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip(); // Initialize tooltips
+        });
+    </script>
 }
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Teacher</th>
-            <th>Enrolled On</th>
-            <th>Amount Paid</th>
-            <th></th> <!-- For Details Link -->
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var enrollment in Model)
-        {
-            <tr>
-                <td>@enrollment.Title</td>
-                <td>@enrollment.Description</td>
-                <td>@enrollment.Teacher</td>
-                <td>@enrollment.EnrollDate.ToString("MM/dd/yyyy")</td>
-                <td>$@enrollment.Amount</td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@enrollment.CourseId" class="btn btn-info">Details</a>
-                </td>
-                <td>
-                    <a asp-action="Review" asp-route-id="@enrollment.CourseId">Add Review</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<style>
+    body {
+        background-color: #f8f9fa; /* Light background for contrast */
+    }
+
+    .card {
+        background: white; /* White background for the card */
+    }
+
+    .table th {
+        background-color: #343a40; /* Dark header for contrast */
+        color: white; /* White text for headers */
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #e0e0e0; /* Gray background on hover */
+    }
+
+    .btn-success {
+        background-color: #28a745; /* Green background */
+        border-color: #28a745; /* Green border */
+        color: white; /* White text */
+        transition: background-color 0.3s, border-color 0.3s; /* Smooth transitions */
+    }
+
+    .btn-success:hover {
+        background-color: #218838; /* Darker green on hover */
+        border-color: #1e7e34; /* Darker green border on hover */
+    }
+
+    .btn-primary {
+        background-color: #007bff; /* Blue background */
+        border-color: #007bff; /* Blue border */
+        color: white; /* White text */
+        transition: background-color 0.3s, border-color 0.3s; /* Smooth transitions */
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3; /* Darker blue on hover */
+        border-color: #004085; /* Darker blue border on hover */
+    }
+
+    .btn-primary:focus,
+    .btn-success:focus {
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5); /* Add focus shadow for accessibility */
+    }
+</style>

@@ -1,27 +1,72 @@
 ﻿@model CourseDetailsViewModel
 
-<h2>Enrollment Transactions for @Model.Title</h2>
+<div class="container my-5">
+    <h1 class="display-4 mb-4 text-center font-weight-bold">Enrollment Transactions for @Model.Title</h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Learner Name</th>
-            <th>Transaction ID</th>
-            <th>Amount</th>
-            <th>Enrollment Date</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var enrollment in Model.Enrollments)
-        {
-            <tr>
-                <td>@enrollment.LearnerName</td>
-                <td>@enrollment.TransactionId</td>
-                <td>@enrollment.Amount</td>
-                <td>@enrollment.EnrollmentDate.ToShortDateString()</td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <div class="card shadow-lg" style="border-radius: 12px;">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">Learner Name</th>
+                            <th scope="col">Transaction ID</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Enrollment Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var enrollment in Model.Enrollments)
+                        {
+                            <tr>
+                                <td>@enrollment.LearnerName</td>
+                                <td>@enrollment.TransactionId</td>
+                                <td>$@enrollment.Amount</td>
+                                <td>@enrollment.EnrollmentDate.ToShortDateString()</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
-<a asp-action="Index" class="btn btn-secondary">Back to Enrollments</a>
+    <div class="text-center mt-3">
+        <a asp-action="Index" class="btn btn-secondary">Back to Enrollments</a>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #f8f9fa; /* Light background */
+    }
+
+    .card {
+        background: white; /* White card background */
+    }
+
+    .table th {
+        background-color: #343a40; /* Dark table header */
+        color: white;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #e0e0e0; /* Light gray on hover */
+    }
+
+    .btn-secondary {
+        background-color: #6c757d; /* Gray button */
+        border-color: #6c757d;
+        color: white;
+        transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268; /* Darker gray on hover */
+        border-color: #545b62;
+    }
+
+    .btn-secondary:focus {
+        box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.5); /* Focus shadow */
+    }
+</style>

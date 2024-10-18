@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\HP\\Downloads\\TeachHub\\TechHub\\TeachHub.csproj": {}
+    "C:\\Users\\omp99\\Source\\Repos\\TeachHub\\TechHub\\TeachHub.csproj": {}
   },
   "projects": {
-    "C:\\Users\\HP\\Downloads\\TeachHub\\TechHub\\TeachHub.csproj": {
+    "C:\\Users\\omp99\\Source\\Repos\\TeachHub\\TechHub\\TeachHub.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\HP\\Downloads\\TeachHub\\TechHub\\TeachHub.csproj",
+        "projectUniqueName": "C:\\Users\\omp99\\Source\\Repos\\TeachHub\\TechHub\\TeachHub.csproj",
         "projectName": "TeachHub",
-        "projectPath": "C:\\Users\\HP\\Downloads\\TeachHub\\TechHub\\TeachHub.csproj",
-        "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\HP\\Downloads\\TeachHub\\TechHub\\obj\\",
+        "projectPath": "C:\\Users\\omp99\\Source\\Repos\\TeachHub\\TechHub\\TeachHub.csproj",
+        "packagesPath": "C:\\Users\\omp99\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\omp99\\Source\\Repos\\TeachHub\\TechHub\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\omp99\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -106,7 +106,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

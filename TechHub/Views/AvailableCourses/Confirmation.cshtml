@@ -2,12 +2,14 @@
     ViewData["Title"] = "Enrollment Confirmation";
 }
 
-<h1>Enrollment Successful!</h1>
+<div class="container mt-5 text-center">
+    <h1 class="display-4 text-success">Enrollment Successful!</h1>
 
-<h4>Congratulations!</h4>
-<p>You have successfully enrolled in <strong>@ViewData["CourseTitle"]</strong>.</p>
-<p>We have received your payment of <strong>$@ViewData["Amount"]</strong>.</p>
+    <h4 class="mt-3">Congratulations!</h4>
+    <p class="lead">You have successfully enrolled in <strong>@ViewData["CourseTitle"]</strong>.</p>
+    <p>We have received your payment of <strong>$@ViewData["Amount"]</strong>.</p>
 
-<p>Thank you for enrolling with us! You can now access the course materials and start learning.</p>
+    <p class="mt-4">Thank you for enrolling with us! You can now access the course materials and start learning.</p>
 
-<a href="@Url.Action("Index", "MyEnrollments")" class="btn btn-primary">Go to Available Courses</a>
+    <a href="@Url.Action("Index", "MyEnrollments")" class="btn btn-primary btn-lg mt-3">Go to Available Courses</a>
+</div>

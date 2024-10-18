@@ -1,13 +1,104 @@
-﻿@{
+﻿ @* @{
+     ViewData["Title"] = "Home";
+ }
+
+ <style>
+     body {
+         /* Set a full background image */
+         background-image: url('https://media.gettyimages.com/id/1370328981/video/child-learning-online-class-from-school-teacher-by-digital-remote-internet-meeting.jpg?s=640x640&k=20&c=JPUOAQX5OT-Y1bWUQ5p6mGA_wFLg4XMtMmnilgF4cGA='); /* Replace with the actual path to your image */
+         background-size: cover; /* Cover the entire screen */
+         background-position: center; /* Center the image */
+         background-attachment: fixed; /* Keep the image fixed when scrolling */
+         background-repeat: no-repeat; /* Prevent repeating the image */
+     }
+
+     .container {
+         position: relative; /* Position relative for layering */
+         z-index: 1; /* Ensure content is above the background */
+         padding: 2rem; /* Add some padding for content */
+     }
+
+     .jumbotron {
+         background-color: rgba(255, 255, 255, 0.8); /* White background with transparency */
+         border-radius: 1rem; /* Rounded corners */
+         padding: 3rem; /* Adjust padding for the jumbotron */
+         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Add subtle shadow for depth */
+     }
+
+     .alert {
+         z-index: 1; /* Ensure alert is above the background */
+     }
+ </style>
+
+ <div class="container mt-5">
+     <div class="jumbotron text-center">
+         <h1 class="display-4">Welcome to TeachHub</h1>
+         <p class="lead">Learn about building Web apps with ASP.NET Core.</p>
+     </div>
+
+     @if (User.Identity.IsAuthenticated)
+     {
+         <div class="alert alert-success text-center mt-4" role="alert">
+             <h3>
+                 <span class="navbar-text">Hello, @User.Identity.Name!</span>
+             </h3>
+         </div>
+     }
+ </div>
+ *@
+@{
     ViewData["Title"] = "Home";
 }
 
-<h1>Welcome to TeachHub</h1>
-<p>Learn about building Web apps with ASP.NET Core.</p>
-@if (User.Identity.IsAuthenticated)
-{
-<h3>
-    <span class="navbar-text">Hello, @User.Identity.Name!</span>
-</h3>
-}
+<style>
+    body {
+        /* Set a full background image */
+        background-image: url('https://media.gettyimages.com/id/1370328981/video/child-learning-online-class-from-school-teacher-by-digital-remote-internet-meeting.jpg?s=640x640&k=20&c=JPUOAQX5OT-Y1bWUQ5p6mGA_wFLg4XMtMmnilgF4cGA='); /* Replace with the actual path to your image */
+        background-size: cover; /* Cover the entire screen */
+        background-position: center; /* Center the image */
+        background-attachment: fixed; /* Keep the image fixed when scrolling */
+        background-repeat: no-repeat; /* Prevent repeating the image */
+        margin: 0; /* Remove default margin */
+        padding: 0; /* Remove default padding */
+        display: flex; /* Use flexbox layout */
+        flex-direction: column; /* Stack elements vertically */
+        min-height: 100vh; /* Full viewport height */
+    }
+
+    .custom-container {
+        flex: 1; /* Take up remaining space */
+        position: relative; /* Position relative for layering */
+        z-index: 1; /* Ensure content is above the background */
+        padding: 2rem; /* Add padding for content */
+    }
+
+    .custom-jumbotron {
+        background-color: rgba(255, 255, 255, 0.85); /* Slightly more opaque */
+        border-radius: 0.5rem; /* Match Bootstrap's default jumbotron border radius */
+        padding: 3rem; /* Adjust padding for the jumbotron */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Add subtle shadow for depth */
+    }
+
+    .custom-alert {
+        z-index: 1; /* Ensure alert is above the background */
+        margin-top: 1rem; /* Adjust margin to avoid conflicts */
+    }
+
+</style>
+
+<div class="container custom-container mt-5">
+    <div class="jumbotron custom-jumbotron text-center">
+        <h1 class="display-4">Welcome to TeachHub</h1>
+        <p class="lead">Learn about building Web apps with ASP.NET Core.</p>
+    </div>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="alert alert-success text-center custom-alert" role="alert">
+            <h3>
+                <span class="navbar-text">Hello, @User.Identity.Name!</span>
+            </h3>
+        </div>
+    }
+</div>
 

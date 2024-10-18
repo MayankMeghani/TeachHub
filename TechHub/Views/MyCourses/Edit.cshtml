@@ -1,80 +1,152 @@
 ﻿@model TeachHub.Models.Course
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Course";
 }
 
-<h1>Edit</h1>
+<style>
+    .edit-course-container {
+        border: 2px solid #ccc;
+        padding: 20px;
+        max-width: 700px;
+        margin: 50px auto;
+        background-color: rgba(249, 249, 249, 0.9);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
 
-<h4>Course</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit" method="post" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="CourseId" />
+    .edit-course-container h1,
+    .edit-course-container h4 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+    }
 
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
+    .form-group {
+        margin-bottom: 15px;
+        position: relative;
+    }
 
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
+    .form-group label {
+        position: absolute;
+        top: -10px;
+        left: 10px;
+        font-size: 12px;
+        background: rgba(249, 249, 249, 0.9);
+        padding: 0 5px;
+        color: #333;
+    }
 
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            
+    .form-control,
+    .form-control-file {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        width: 100%;
+    }
 
-            <input type="hidden" asp-for="TeacherId" />
+    .text-danger {
+        margin-top: 5px;
+        font-size: 0.9em;
+    }
 
+    .existing-videos {
+        margin-bottom: 15px;
+    }
 
-            <!-- Existing videos with preview -->
-            <div class="form-group">
-                <label>Existing Videos</label>
-                <ul>
-                    @foreach (var video in Model.Videos)
-                    {
-                        <li>
-                            <label>@video.Title</label>
-                            <video width="320" height="240" controls>
-                                <source src="@video.VideoUrl" type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>
-                            <br />
-                            <input type="checkbox" name="videoIdsToRemove" value="@video.VideoId" /> Remove
-                        </li>
-                    }
-                </ul>
-            </div>
+    .existing-videos label {
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
 
-            <!-- Upload new videos -->
-            <div class="form-group">
-                <label for="videoFiles">Upload New Videos</label>
-                <input type="file" name="videoFiles" multiple class="form-control" />
-            </div>
-            <input type="hidden" asp-for="CreatedAt" />
+    .existing-videos li {
+        margin-bottom: 10px;
+    }
 
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+    video {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .back-button {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    button[type="submit"] {
+        width: 100%;
+        padding: 10px;
+    }
+</style>
+
+<div class="edit-course-container">
+    <h1>Edit Course</h1>
+    <h4>Update Course Details</h4>
+    <hr />
+
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <input type="hidden" asp-for="CourseId" />
+
+        <!-- Title Field -->
+        <div class="form-group">
+            <label asp-for="Title" class="control-label">Course Title</label>
+            <input asp-for="Title" class="form-control" placeholder="Enter course title" required />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <!-- Description Field -->
+        <div class="form-group">
+            <label asp-for="Description" class="control-label">Course Description</label>
+            <input asp-for="Description" class="form-control" placeholder="Enter course description" required />
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <!-- Price Field -->
+        <div class="form-group">
+            <label asp-for="Price" class="control-label">Course Price</label>
+            <input asp-for="Price" class="form-control" placeholder="Enter course price" required />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+
+        <input type="hidden" asp-for="TeacherId" />
+
+        <!-- Existing Videos with Preview -->
+        <div class="form-group existing-videos">
+            <label>Existing Videos</label>
+            <ul>
+                @foreach (var video in Model.Videos)
+                {
+                    <li>
+                        <label>@video.Title</label>
+                        <video width="320" height="240" controls>
+                            <source src="@video.VideoUrl" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <input type="checkbox" name="videoIdsToRemove" value="@video.VideoId" /> Remove
+                    </li>
+                }
+            </ul>
+        </div>
+
+        <!-- Upload New Videos -->
+        <div class="form-group">
+            <label for="videoFiles" class="control-label">Upload New Videos</label>
+            <input type="file" name="videoFiles" multiple class="form-control-file" />
+        </div>
+
+        <input type="hidden" asp-for="CreatedAt" />
+
+        <div class="form-group text-center">
+            <input type="submit" value="Save" class="btn btn-success" />
+        </div>
+    </form>
+
+    <div class="back-button">
+        <a asp-action="Index" class="btn btn-secondary">← Back to List</a>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @* @await Html.RenderPartialAsync("_ValidationScriptsPartial"); *@
 }

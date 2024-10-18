@@ -1,58 +1,42 @@
 ﻿@model IEnumerable<TeachHub.Models.Review>
-
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-4">@ViewData["Title"]</h1>
+    </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Content)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Rating)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Course)
-            </th>
-            <th>
-                Teacher
-                @Html.DisplayNameFor(model => model.Course.Teacher.Name) <!-- Display Teacher's Name -->
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Content)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Rating)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CreatedAt)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Course.Description)
-                </td>
-                <td> 
-                    @Html.DisplayFor(modelItem => item.Course.Teacher.Name) <!-- Display Teacher's Name -->
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.ReviewId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.ReviewId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ReviewId">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <div class="table-responsive">
+        <table class="table table-hover table-striped table-bordered align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">@Html.DisplayNameFor(model => model.Content)</th>
+                    <th scope="col">@Html.DisplayNameFor(model => model.Rating)</th>
+                    <th scope="col">@Html.DisplayNameFor(model => model.CreatedAt)</th>
+                    <th scope="col">@Html.DisplayNameFor(model => model.Course.Description)</th>
+                    <th scope="col">Teacher @Html.DisplayNameFor(model => model.Course.Teacher.Name)</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Content)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Rating)</td>
+                        <td>@Html.DisplayFor(modelItem => item.CreatedAt)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Course.Description)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Course.Teacher.Name)</td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.ReviewId" class="btn btn-warning btn-sm mx-1">Edit</a>
+                            <a asp-action="Details" asp-route-id="@item.ReviewId" class="btn btn-info btn-sm text-white mx-1">Details</a>
+                            <a asp-action="Delete" asp-route-id="@item.ReviewId" class="btn btn-danger btn-sm mx-1">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

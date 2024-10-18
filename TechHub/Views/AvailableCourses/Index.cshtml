@@ -1,55 +1,183 @@
-﻿@model IEnumerable<TeachHub.Models.Course>
+﻿@* @model IEnumerable<TeachHub.Models.Course>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<div class="container mt-5">
+    <h1 class="mb-4 text-center">Course List</h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Teacher)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedAt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Teacher.Name)
-            </td>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.CourseId">Details</a> 
-                </td>
-             
-        </tr>
+    <table class="table table-striped table-bordered table-hover table-responsive">
+        <thead class="thead-dark">
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Created At</th>
+                <th>Teacher</th>
+                <th class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr class="table-row">
+                    <td>@item.Title</td>
+                    <td>@item.Description</td>
+                    <td>@item.Price.ToString("C")</td>
+                    <td>@item.CreatedAt.ToString("MM/dd/yyyy")</td>
+                    <td>
+                        @if (item.Teacher != null)
+                        {
+                            @item.Teacher.Name
+                        }
+                        else
+                        {
+                            <span class="text-muted">N/A</span>
+                        }
+                    </td>
+                    <td class="text-center">
+                        <a asp-action="Details" asp-route-id="@item.CourseId" class="btn btn-info btn-sm" data-toggle="tooltip" data-placement="top" title="View Details">
+                            <i class="fas fa-info-circle"></i> Details
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip(); // Initialize tooltips
+        });
+    </script>
 }
-    </tbody>
-</table>
+
+<style>
+    .table-row:hover {
+        background-color: #f8f9fa; /* Light gray background on hover */
+    }
+
+    .table th, .table td {
+        vertical-align: middle; /* Center-align text vertically */
+    }
+
+    .btn-info {
+        transition: background-color 0.3s, color 0.3s; /* Smooth transitions for button */
+    }
+
+    .btn-info:hover {
+        background-color: #0056b3; /* Darker blue on hover */
+        color: #fff; /* White text on hover */
+    }
+
+    /* Optional: Add some padding to the top and bottom of the table */
+    .table {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+</style>
+ *@
+
+ @model IEnumerable<TeachHub.Models.Course>
+
+@{
+    ViewData["Title"] = "Course List";
+}
+
+<div class="container mt-5">
+    <h1 class="mb-4 text-center font-weight-bold">Course List</h1>
+
+    <div class="card shadow-lg" style="border-radius: 12px;">
+        <div class="card-body">
+            <table class="table table-striped table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Created At</th>
+                        <th>Teacher</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Title</td>
+                            <td>@item.Description</td>
+                            <td>@item.Price.ToString("C")</td>
+                            <td>@item.CreatedAt.ToString("MM/dd/yyyy")</td>
+                            <td>
+                                @if (item.Teacher != null)
+                                {
+                                    @item.Teacher.Name
+                                }
+                                else
+                                {
+                                    <span class="text-muted">N/A</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                <a asp-action="Details" asp-route-id="@item.CourseId" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="View Details">
+                                    <i class="fas fa-info-circle"></i>
+                                    Details
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip(); // Initialize tooltips
+        });
+    </script>
+}
+
+<style>
+    body {
+        background-color: #f8f9fa; /* Light background for contrast */
+    }
+
+    .card {
+        background: white; /* White background for the card */
+    }
+
+    .table th {
+        background-color: #343a40; /* Dark header for contrast */
+        color: white; /* White text for headers */
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #f2f2f2; /* Light gray for odd rows */
+    }
+
+    .table-row:hover {
+        background-color: #e0e0e0; /* Gray background on hover */
+    }
+
+    .btn-success {
+        background-color: #28a745; /* Green background */
+        border-color: #28a745; /* Green border */
+        color: white; /* White text */
+        transition: background-color 0.3s, border-color 0.3s; /* Smooth transitions */
+    }
+
+        .btn-success:hover {
+            background-color: #218838; /* Darker green on hover */
+            border-color: #1e7e34; /* Darker green border on hover */
+        }
+
+        .btn-success:focus {
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5); /* Add focus shadow for accessibility */
+        }
+</style>
