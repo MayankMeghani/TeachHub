@@ -225,6 +225,24 @@
     <!-- Main Content -->
     <div class="container mt-4">
         @RenderBody()
+
+        @if (!string.IsNullOrEmpty(Context.Request.Query["notify"]))
+        {
+            @* var notificationType = Context.Request.Query["notify"].ToString().ToLower();
+            string notificationMessage = notificationType switch
+            {
+                "login" => "You have successfully logged in!",
+                "register" => "Registration successful! Welcome!",
+                _ => string.Empty,
+            };
+
+            if (!string.IsNullOrEmpty(notificationMessage))
+            {
+                <div class="alert alert-success text-center mt-4" role="alert">
+                    <h3>@notificationMessage</h3>
+                </div>
+            } *@
+        }
     </div>
 
     <!-- Footer -->
