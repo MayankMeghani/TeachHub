@@ -36,8 +36,8 @@ namespace TeachHub
                 options.LoginPath = "/Account/Login";
                 options.LogoutPath = "/Account/Logout";
                 options.AccessDeniedPath = "/Account/AccessDenied";
-            }); 
-            
+            });
+
             services.AddSingleton<FirebaseService>(sp =>
             {
                 var logger = sp.GetRequiredService<ILogger<FirebaseService>>();
@@ -59,13 +59,16 @@ namespace TeachHub
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                app.UseStatusCodePagesWithReExecute("/Home/HandleError/{0}");
+                app.UseStatusCodePagesWithReExecute("/Home/Error/{0}");
+                app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
@@ -73,6 +76,6 @@ namespace TeachHub
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
-
     }
-}
+
+ }
