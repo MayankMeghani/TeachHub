@@ -1,109 +1,4 @@
-﻿ @* @{
-     ViewData["Title"] = "Home";
- }
-
- <style>
-     body {
-         /* Set a full background image */
-         background-image: url('https://media.gettyimages.com/id/1370328981/video/child-learning-online-class-from-school-teacher-by-digital-remote-internet-meeting.jpg?s=640x640&k=20&c=JPUOAQX5OT-Y1bWUQ5p6mGA_wFLg4XMtMmnilgF4cGA='); /* Replace with the actual path to your image */
-         background-size: cover; /* Cover the entire screen */
-         background-position: center; /* Center the image */
-         background-attachment: fixed; /* Keep the image fixed when scrolling */
-         background-repeat: no-repeat; /* Prevent repeating the image */
-     }
-
-     .container {
-         position: relative; /* Position relative for layering */
-         z-index: 1; /* Ensure content is above the background */
-         padding: 2rem; /* Add some padding for content */
-     }
-
-     .jumbotron {
-         background-color: rgba(255, 255, 255, 0.8); /* White background with transparency */
-         border-radius: 1rem; /* Rounded corners */
-         padding: 3rem; /* Adjust padding for the jumbotron */
-         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Add subtle shadow for depth */
-     }
-
-     .alert {
-         z-index: 1; /* Ensure alert is above the background */
-     }
- </style>
-
- <div class="container mt-5">
-     <div class="jumbotron text-center">
-         <h1 class="display-4">Welcome to TeachHub</h1>
-         <p class="lead">Learn about building Web apps with ASP.NET Core.</p>
-     </div>
-
-     @if (User.Identity.IsAuthenticated)
-     {
-         <div class="alert alert-success text-center mt-4" role="alert">
-             <h3>
-                 <span class="navbar-text">Hello, @User.Identity.Name!</span>
-             </h3>
-         </div>
-     }
- </div>
- *@
-@* @{
-    ViewData["Title"] = "Home";
-}
-
-<style>
-    body {
-        /* Set a full background image */
-        background-image: url('https://media.gettyimages.com/id/1370328981/video/child-learning-online-class-from-school-teacher-by-digital-remote-internet-meeting.jpg?s=640x640&k=20&c=JPUOAQX5OT-Y1bWUQ5p6mGA_wFLg4XMtMmnilgF4cGA='); /* Replace with the actual path to your image */
-        background-size: cover; /* Cover the entire screen */
-        background-position: center; /* Center the image */
-        background-attachment: fixed; /* Keep the image fixed when scrolling */
-        background-repeat: no-repeat; /* Prevent repeating the image */
-        margin: 0; /* Remove default margin */
-        padding: 0; /* Remove default padding */
-        display: flex; /* Use flexbox layout */
-        flex-direction: column; /* Stack elements vertically */
-        min-height: 100vh; /* Full viewport height */
-    }
-
-    .custom-container {
-        flex: 1; /* Take up remaining space */
-        position: relative; /* Position relative for layering */
-        z-index: 1; /* Ensure content is above the background */
-        padding: 2rem; /* Add padding for content */
-    }
-
-    .custom-jumbotron {
-        background-color: rgba(255, 255, 255, 0.85); /* Slightly more opaque */
-        border-radius: 0.5rem; /* Match Bootstrap's default jumbotron border radius */
-        padding: 3rem; /* Adjust padding for the jumbotron */
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Add subtle shadow for depth */
-    }
-
-    .custom-alert {
-        z-index: 1; /* Ensure alert is above the background */
-        margin-top: 1rem; /* Adjust margin to avoid conflicts */
-    }
-
-</style>
-
-<div class="container custom-container mt-5">
-    <div class="jumbotron custom-jumbotron text-center">
-        <h1 class="display-4">Welcome to TeachHub</h1>
-        <p class="lead">Learn about building Web apps with ASP.NET Core.</p>
-    </div>
-
-    @if (User.Identity.IsAuthenticated)
-    {
-        <div class="alert alert-success text-center custom-alert" role="alert">
-            <h3>
-                <span class="navbar-text">Hello, @User.Identity.Name!</span>
-            </h3>
-        </div>
-    }
-</div>
- *@
-
-@{
+﻿@{
     ViewData["Title"] = "Home";
 }
 
@@ -144,33 +39,6 @@
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Add shadow */
     }
 
-    .notification-popup {
-        position: fixed; /* Fixed position */
-        top: 60px; /* Below the navbar */
-        left: 50%; /* Center horizontally */
-        transform: translate(-50%, -20px); /* Offset to center and push down slightly */
-        background-color: rgba(255, 255, 255, 0.8); /* White background with some opacity */
-        backdrop-filter: blur(10px); /* Blur effect */
-        padding: 15px; /* Padding */
-        border-radius: 8px; /* Rounded corners */
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Shadow for depth */
-        z-index: 1000; /* Ensure it appears above other content */
-        transition: all 0.5s ease; /* Smooth transitions */
-        opacity: 0; /* Initially transparent */
-        transform: translate(-50%, 0); /* Start from slightly behind */
-    }
-
-        .notification-popup.show {
-            opacity: 1; /* Fully opaque */
-            transform: translate(-50%, 20px); /* Move down slightly */
-        }
-
-    .close-btn {
-        cursor: pointer; /* Pointer cursor */
-        color: #000; /* Black color */
-        margin-left: 10px; /* Space from text */
-        font-weight: bold; /* Bold font */
-    }
 </style>
 
 <div class="container custom-container mt-5">
@@ -182,49 +50,9 @@
     @if (User.Identity.IsAuthenticated)
     {
         <div class="alert alert-success text-center custom-alert" role="alert">
-            <h3>
-                <span class="navbar-text">🎉 Hello, @User.Identity.Name! Welcome back! 🎊</span>
-            </h3>
+            <h3>🎉 Hello, @User.Identity.Name! Welcome back! 🎊</h3>
         </div>
     }
 
-    @if (!string.IsNullOrEmpty(Context.Request.Query["notify"]))
-    {
-        var notificationType = Context.Request.Query["notify"].ToString().ToLower();
-        string notificationMessage = notificationType switch
-        {
-            "login" => "You have successfully logged in!",
-            "register" => "Registration successful! Welcome!",
-            _ => string.Empty,
-        };
-
-        if (!string.IsNullOrEmpty(notificationMessage))
-        {
-            <div class="notification-popup show" id="notificationPopup">
-                <span>@notificationMessage</span>
-                <span class="close-btn" onclick="hideNotification()">&times;</span> <!-- Close button -->
-            </div>
-        }
-    }
 </div>
-
-<script>
-    function hideNotification() {
-        const popup = document.getElementById('notificationPopup');
-        popup.classList.remove('show'); // Hide the notification
-
-        // Optional: Add a timeout to remove from the DOM after hiding
-        setTimeout(() => {
-            popup.style.display = 'none';
-        }, 500); // Adjust time as needed (500 ms for the transition)
-    }
-
-    // Optional: Automatically hide the notification after a few seconds
-    setTimeout(() => {
-        const popup = document.getElementById('notificationPopup');
-        if (popup) {
-            hideNotification();
-        }
-    }, 5000); // Adjust time as needed (e.g., 5000 ms = 5 seconds)
-</script>
 

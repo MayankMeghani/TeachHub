@@ -81,6 +81,7 @@ namespace TeachHub.Controllers.learner
                 // Add an error message to TempData
                 TempData["ProfileIncompleteError"] = "Your profile is incomplete. Please complete your profile before enrolling in a course.";
 
+                TempData["ErrorMessage"] = "Your profile is incomplete. Please complete your profile before enrolling in a course.";
                 // Redirect to the Index page or Profile completion page
                 return RedirectToAction("Details", "AvailableCourses", new { id = CourseId });
             }
@@ -127,7 +128,7 @@ namespace TeachHub.Controllers.learner
 
                 _context.Enrollments.Add(enrollment);
                 await _context.SaveChangesAsync();
-
+                TempData["SuccessMessage"] = "Enrolled in Course successfully!";
                 return RedirectToAction(nameof(Confirmation), new { CourseId = model.CourseId, Amount = course.Price });
             }
             catch (Exception ex)
@@ -138,7 +139,7 @@ namespace TeachHub.Controllers.learner
                 var course = _context.Courses.Find(model.CourseId);
                 ViewBag.Course = course;
 
-                return View(model); // Show the form again with the error message
+                return View(model); 
             }
         }
         // GET: AvailableCourses/Confirmation

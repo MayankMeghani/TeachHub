@@ -3,7 +3,6 @@
 @{
     ViewData["Title"] = "Enroll in Course";
 }
-
 <div class="container my-5">
     <h1 class="display-4 text-center mb-4">Enroll in @ViewBag.Course.Title</h1>
 
@@ -12,7 +11,7 @@
     <div class="mb-4">
         <p class="mb-1" style="font-size: 1.25rem;"><strong>Title:</strong> <span class="text-muted">@ViewBag.Course.Title</span></p>
         <p class="mb-1" style="font-size: 1.25rem;"><strong>Description:</strong> <span class="text-muted">@ViewBag.Course.Description</span></p>
-        <p class="mb-1" style="font-size: 1.5rem;"><strong>Price:</strong> <span class="text-success display-6">$@ViewBag.Course.Price</span></p>
+        <p class="mb-1" style="font-size: 1.5rem;"><strong>Price:</strong> <span class="text-success display-6">₹@ViewBag.Course.Price</span></p>
     </div>
 
     <div class="row">
@@ -23,14 +22,21 @@
 
                 <!-- Payment fields -->
                 <h4 class="mt-4 mb-3">Payment Details</h4>
-                <p class="mb-3">You need to pay: <strong class="text-success display-6">$@ViewBag.Course.Price</strong></p>
+                <p class="mb-3">You need to pay: <strong class="text-success display-6">₹@ViewBag.Course.Price</strong></p>
 
                 <div class="card border-primary mb-3">
                     <div class="card-header text-white bg-primary">
                         <h5 class="mb-0">Enter Your Payment Details</h5>
                     </div>
                     <div class="card-body">
-                        <div id="card-element" class="p-3" style="border: 1px solid #ced4da; border-radius: 5px;">
+
+                        <!-- Spinner -->
+                        <div id="spinner" class="d-flex justify-content-center mb-3">
+                            <div class="spinner-border text-primary" role="status"></div>
+                        </div>
+
+                        <!-- Stripe card element -->
+                        <div id="card-element" class="p-3" style="border: 1px solid #ced4da; border-radius: 5px; display: none;">
                             <!-- Stripe card element will be inserted here -->
                         </div>
                         <small class="form-text text-muted mt-2">Your payment information is securely processed.</small>
@@ -40,7 +46,7 @@
                 <input type="hidden" id="stripeToken" name="stripeToken" />
 
                 <div class="d-flex justify-content-between mt-4">
-                    <button type="submit" class="btn btn-success btn-lg">Pay and Enroll Now</button>
+                    <button type="submit" id="pay-button" class="btn btn-success btn-lg" disabled>Pay and Enroll Now</button>
                     <a asp-action="Details" asp-route-id="@ViewBag.Course.CourseId" class="btn btn-danger btn-lg">Cancel</a>
                 </div>
 
@@ -56,26 +62,42 @@
 </div>
 
 @section Scripts {
-    <script src="https://js.stripe.com/v3/"></script>
     <script>
         const stripe = Stripe('@ViewBag.StripePublishableKey');
         const elements = stripe.elements();
         const cardElement = elements.create('card');
+
+        const cardElementContainer = document.getElementById('card-element');
+        const spinner = document.getElementById('spinner');
+        const payButton = document.getElementById('pay-button');
+
+        // Initially hide the card element and show the spinner
+        cardElementContainer.style.display = 'none';
+        spinner.style.display = 'block';
+        payButton.disabled = true;
+
         cardElement.mount('#card-element');
+
+        cardElement.on('ready', function () {
+            // Hide spinner and show card element when it's ready
+            cardElementContainer.style.display = 'block';
+            spinner.style.display = 'none';
+            payButton.disabled = false;
+        });
 
         const paymentForm = document.getElementById('enrollment-form');
         paymentForm.addEventListener('submit', async (event) => {
-            event.preventDefault(); // Stop form temporarily to fetch token
+            event.preventDefault(); 
 
-            // Create a token and set its value in the hidden input field
+            payButton.disabled = true;
+
             const { token, error } = await stripe.createToken(cardElement);
             if (error) {
                 document.getElementById('payment-response').innerText = error.message;
+                payButton.disabled = false; // Re-enable the button if there's an error
             } else {
-                // Set the Stripe token in the hidden field
                 document.getElementById('stripeToken').value = token.id;
 
-                // Now allow the form to submit with Stripe token
                 paymentForm.submit();
             }
         });

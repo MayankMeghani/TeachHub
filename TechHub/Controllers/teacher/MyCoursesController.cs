@@ -74,8 +74,9 @@ namespace TeachHub.Controllers.Teachers
                 // Add an error message to TempData
                 TempData["ProfileIncompleteError"] = "Your profile is incomplete. Please complete your profile before creating a course.";
 
-                // Redirect to the Index page or Profile completion page
-                return RedirectToAction("Index"); // Or redirect to "CompleteProfile" if you have that page
+                TempData["ErrorMessage"] = "Your profile is incomplete. Please complete your profile before creating a course.";
+                
+                return RedirectToAction("Index"); 
             }
 
             // Create a new course object
@@ -171,11 +172,10 @@ namespace TeachHub.Controllers.Teachers
 
                     if (ModelState.IsValid)
                     {
-                        // Add all successfully uploaded videos to the context
                         _context.Videos.AddRange(uploadedVideos);
                         await _context.SaveChangesAsync();
                         _logger.LogInformation($"All videos processed and saved for course '{course.Title}'.");
-
+                        TempData["SuccessMessage"] = "Course created successfully!";
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -183,17 +183,18 @@ namespace TeachHub.Controllers.Teachers
                 {
                     _logger.LogError(ex, $"An error occurred while creating the course: {ex.Message}");
                     ModelState.AddModelError("", "An error occurred while creating the course. Please try again.");
+                    TempData["ErrorMessage"] = "An error occurred while creating the course.";
+
                 }
             }
 
-            // Log validation errors if the model state is invalid
             var errors = ModelState.Values.SelectMany(v => v.Errors);
             foreach (var error in errors)
             {
                 _logger.LogWarning($"Model validation error: {error.ErrorMessage}");
             }
 
-            return View(course); // Return the view if the model is invalid
+            return View(course);
         }
 
         // GET: MyCourses/Edit/5
@@ -242,11 +243,9 @@ namespace TeachHub.Controllers.Teachers
             {
                 try
                 {
-                    // Update the course
                     _context.Update(course);
                     await _context.SaveChangesAsync();
 
-                    // Handle removal of existing videos
                     if (videoIdsToRemove != null && videoIdsToRemove.Any())
                     {
                         var videosToDelete = _context.Videos.Where(v => videoIdsToRemove.Contains(v.VideoId));
@@ -254,7 +253,7 @@ namespace TeachHub.Controllers.Teachers
                         await _context.SaveChangesAsync();
                     }
 
-                    // Handle new video uploads
+
                     foreach (var file in videoFiles)
                     {
                         if (file != null && file.Length > 0)
@@ -292,7 +291,7 @@ namespace TeachHub.Controllers.Teachers
                         throw;
                     }
                 }
-
+                TempData["SuccessMessage"] = "Course updated successfully!";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -327,12 +326,18 @@ namespace TeachHub.Controllers.Teachers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var course = await _context.Courses.FindAsync(id);
-            if (course != null && course.TeacherId == _userManager.GetUserId(User)) // Check ownership
+            if (course != null && course.TeacherId == _userManager.GetUserId(User)) 
             {
                 _context.Courses.Remove(course);
+                TempData["SuccessMessage"] = "Course deleted successfully!";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Failed to delete the course.";
             }
 
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
     }

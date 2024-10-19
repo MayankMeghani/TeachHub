@@ -57,32 +57,6 @@ namespace TeachHub.Controllers.learner
             return View(review);
         }
 
-        // GET: MyReviews/Create
-        public IActionResult Create()
-        {
-            ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "Description");
-            ViewData["LearnerId"] = new SelectList(_context.Learners, "LearnerId", "LearnerId");
-            return View();
-        }
-
-        // POST: MyReviews/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ReviewId,Content,Rating,CreatedAt,CourseId,LearnerId")] Review review)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(review);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "Description", review.CourseId);
-            ViewData["LearnerId"] = new SelectList(_context.Learners, "LearnerId", "LearnerId", review.LearnerId);
-            return View(review);
-        }
-
         // GET: MyReviews/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -118,7 +92,9 @@ namespace TeachHub.Controllers.learner
                 try
                 {
                     _context.Update(review);
-                    await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync(); 
+                    TempData["SuccessMessage"] = "Review updated successfully!";
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -166,7 +142,9 @@ namespace TeachHub.Controllers.learner
             var review = await _context.Reviews.FindAsync(id);
             if (review != null)
             {
-                _context.Reviews.Remove(review);
+                _context.Reviews.Remove(review); 
+                TempData["SuccessMessage"] = "Review deleted successfully!";
+
             }
 
             await _context.SaveChangesAsync();

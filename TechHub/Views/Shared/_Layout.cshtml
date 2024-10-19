@@ -1,94 +1,4 @@
-﻿@* <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - TeachHub</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-</head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container">
-                <a class="navbar-brand" asp-controller="Home" asp-action="Index">TeachHub</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav mr-auto">
-                        @if (User.Identity.IsAuthenticated)
-                        {
-
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Profile" asp-action="Index">Profile</a>
-                            </li>
-                            @if (User.IsInRole("Teacher"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-controller="MyCourses" asp-action="Index">My Courses</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Transaction" asp-action="Index">Enrollments</a>
-                                </li>
-                            }
-                            else if (User.IsInRole("Learner"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-controller="AvailableCourses" asp-action="Index">Available Courses</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-controller="MyEnrollments" asp-action="Index">My Enrollments</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-controller="MyReviews" asp-action="Index">My Reviews</a>
-                                </li>
-                            }
-
-                        }
-                    </ul>
-
-                    <ul class="navbar-nav ml-auto">
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <li class="nav-item">
-                                <form asp-controller="Account" asp-action="Logout" method="post" class="form-inline">
-                                    <button type="submit" class="btn btn-link nav-link" style="text-decoration: none;">Logout</button>
-                                </form>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Account" asp-action="Register">Sign Up</a>
-                            </li>
-                        }
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-
-    <div class="container mt-4">
-        @RenderBody()
-    </div>
-
-    <footer class="footer mt-auto py-3 bg-light">
-        <div class="container">
-            <span class="text-muted">&copy; TeachHub @DateTime.Now.Year</span>
-        </div>
-    </footer>
-
-    @RenderSection("Scripts", required: false)
-</body>
-</html>
- *@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -101,6 +11,8 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         body {
@@ -156,6 +68,33 @@
             .footer span {
                 font-size: 0.9rem;
             }
+
+        .notification-popup {
+            position: fixed;
+            top: 60px;
+            left: 50%;
+            transform: translate(-50%, 0);
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: all 0.5s ease;
+            opacity: 0;
+            transform: translate(-50%, 0);
+        }
+
+        .notification-popup.show {
+            opacity: 1;
+            transform: translate(-50%, 20px);
+        }
+
+        .close-btn {
+            cursor: pointer;
+            margin-left: 10px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -226,23 +165,6 @@
     <div class="container mt-4">
         @RenderBody()
 
-        @if (!string.IsNullOrEmpty(Context.Request.Query["notify"]))
-        {
-            @* var notificationType = Context.Request.Query["notify"].ToString().ToLower();
-            string notificationMessage = notificationType switch
-            {
-                "login" => "You have successfully logged in!",
-                "register" => "Registration successful! Welcome!",
-                _ => string.Empty,
-            };
-
-            if (!string.IsNullOrEmpty(notificationMessage))
-            {
-                <div class="alert alert-success text-center mt-4" role="alert">
-                    <h3>@notificationMessage</h3>
-                </div>
-            } *@
-        }
     </div>
 
     <!-- Footer -->
@@ -254,5 +176,31 @@
 
     <!-- Additional Scripts -->
     @RenderSection("Scripts", required: false)
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var successMessage = '@Html.Raw(TempData["SuccessMessage"])';
+            var errorMessage = '@Html.Raw(TempData["ErrorMessage"])';
+
+            if (successMessage && successMessage.length > 0) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: successMessage,
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+            }
+
+            if (errorMessage && errorMessage.length > 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: errorMessage,
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+            }
+        });
+    </script>
 </body>
 </html>

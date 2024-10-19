@@ -36,15 +36,14 @@ namespace TeachHub.Controllers.learner
                                   CourseId = c.CourseId,
                                   Title = c.Title,
                                   Description = c.Description,
-                                  Teacher = t.Name, // Fetch the Teacher's name from the Teachers table
-                                  EnrollDate = e.TransactionDate, // Enrollment Date
-                                  Amount = e.Amount // Optionally display the amount paid
+                                  Teacher = t.Name, 
+                                  EnrollDate = e.TransactionDate, 
+                                  Amount = e.Amount 
                               };
 
-            // Fetch the list asynchronously
             var enrollmentList = await enrollments.ToListAsync();
 
-            return View(enrollmentList); // Pass the list of enrollments to the view
+            return View(enrollmentList);
         }
 
         // GET: Courses/Details/5
@@ -57,7 +56,7 @@ namespace TeachHub.Controllers.learner
 
             var course = await _context.Courses
                 .Include(c => c.Teacher)
-                .Include(c => c.Videos)  // Include the videos related to this course
+                .Include(c => c.Videos)  
                 .FirstOrDefaultAsync(m => m.CourseId == id);
 
             if (course == null)
@@ -69,16 +68,15 @@ namespace TeachHub.Controllers.learner
         }
         public async Task<IActionResult> Review(int id)
         {
-            // Get the currently logged-in user
             var user = await _userManager.GetUserAsync(User);
 
-            // Check if the user has already reviewed this course
             var existingReview = await _context.Reviews
                 .FirstOrDefaultAsync(r => r.CourseId == id && r.LearnerId == user.Id);
 
             if (existingReview != null)
             {
                 // If the review already exists, return an error or redirect to an edit page
+                TempData["ErrorMessage"] = "You have already reviewed this course.";
                 TempData["ReviewExistsError"] = "You have already reviewed this course.";
                 return RedirectToAction("Index");
             }
@@ -103,6 +101,8 @@ namespace TeachHub.Controllers.learner
             {
                 _context.Add(review);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Review Added successfully!";
+
                 return RedirectToAction(nameof(Index));
             }
 

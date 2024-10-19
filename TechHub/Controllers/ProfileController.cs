@@ -26,8 +26,8 @@ namespace TeachHub.Controllers.teacher
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.Users
-                .Include(u => u.Teacher)  // Eager load Teacher profile
-                .Include(u => u.Learner)  // Eager load Learner profile
+                .Include(u => u.Teacher)  
+                .Include(u => u.Learner)  
                 .FirstOrDefaultAsync(u => u.Id == _userManager.GetUserId(User));
 
             if (user == null)
@@ -35,7 +35,6 @@ namespace TeachHub.Controllers.teacher
                 return NotFound();
             }
 
-            // Pass the user to the view with profile details
             return View(user);
         }
 
@@ -104,6 +103,7 @@ namespace TeachHub.Controllers.teacher
                     await _context.SaveChangesAsync();
 
                     _logger.LogInformation("Profile marked as complete and changes saved for user {UserId}", user.Id);
+                    TempData["SuccessMessage"] = "Profile Completed successfully!";
 
                     return RedirectToAction("Index");
                 }
@@ -145,7 +145,7 @@ namespace TeachHub.Controllers.teacher
             {
                 return NotFound();
             }
-            ViewData["Id"] = new SelectList(_context.Set<User>(), "TeacherId", "TeacherId", teacher.TeacherId);
+
             return View(teacher);
         }
 
@@ -165,21 +165,20 @@ namespace TeachHub.Controllers.teacher
             {
                 try
                 {
-                    // Handle profile picture upload
                     if (ProfilePicture != null && ProfilePicture.Length > 0)
                     {
-                        // Use OpenReadStream to ensure the file is read correctly
                         using (var stream = ProfilePicture.OpenReadStream())
                         {
                             var fileName = $"{id}_{ProfilePicture.FileName}"; // Create a unique file name
 
-                            // Upload the profile picture to Firebase and get the URL
                             teacher.ProfilePicture = await _firebaseService.UploadProfilePicture(stream, fileName);
                         }
                     }
 
                     _context.Update(teacher);
                     await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Profile Updated successfully!";
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -192,6 +191,7 @@ namespace TeachHub.Controllers.teacher
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
 
@@ -222,7 +222,6 @@ namespace TeachHub.Controllers.teacher
                     return NotFound();
                 }
 
-                // Handle profile picture upload
                 string profilePictureUrl = null;
                 if (ProfilePicture != null && ProfilePicture.Length > 0)
                 {
@@ -234,22 +233,19 @@ namespace TeachHub.Controllers.teacher
                     }
                 }
 
-                // Set learner's details
-                learner.LearnerId = user.Id; // Assuming LearnerId is linked to the user's ID
+                learner.LearnerId = user.Id; 
                 learner.ProfilePicture = profilePictureUrl;
 
                 _context.Add(learner);
                 await _context.SaveChangesAsync();
 
-                // Update the user's profile status
                 user.IsProfileComplete = true;
                 await _userManager.UpdateAsync(user);
                 await _context.SaveChangesAsync();
-
+                TempData["SuccessMessage"] = "Profile Completed successfully!";
                 return RedirectToAction(nameof(Index));
             }
 
-            // Log the invalid model state
             _logger.LogWarning("Model state is invalid for learner creation. Errors:");
             foreach (var modelState in ModelState.Values)
             {
@@ -277,7 +273,6 @@ namespace TeachHub.Controllers.teacher
             {
                 return NotFound();
             }
-            ViewData["Id"] = new SelectList(_context.Set<User>(), "LearnerId", "LearnerId", learner.LearnerId);
             return View(learner);
         }
 
@@ -297,7 +292,6 @@ namespace TeachHub.Controllers.teacher
             {
                 try
                 {
-                    // Handle profile picture upload if a new one is provided
                     if (ProfilePicture != null && ProfilePicture.Length > 0)
                     {
                         var fileName = $"{learner.LearnerId}_{ProfilePicture.FileName}";
@@ -310,6 +304,8 @@ namespace TeachHub.Controllers.teacher
 
                     _context.Update(learner);
                     await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Profile Updated successfully!";
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -325,8 +321,6 @@ namespace TeachHub.Controllers.teacher
                 return RedirectToAction(nameof(Index));
             }
 
-            // In case of errors, log and return view with learner data
-            ViewData["Id"] = new SelectList(_context.Set<User>(), "LearnerId", "LearnerId", learner.LearnerId);
             return View(learner);
         }
 

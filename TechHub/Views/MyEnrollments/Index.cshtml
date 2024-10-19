@@ -1,56 +1,4 @@
-﻿@* @model IEnumerable<MyEnrollmentViewModel>
-@{
-    ViewData["Title"] = "My Enrollments";
-}
-
-<div class="container my-5">
-    <h1 class="display-4 mb-4 text-center">@ViewData["Title"]</h1>
-
-    @if (TempData["ReviewExistsError"] != null)
-    {
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            @TempData["ReviewExistsError"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
-
-    <div class="table-responsive">
-        <table class="table table-hover table-bordered align-middle">
-            <thead class="table-dark">
-                <tr>
-                    <th scope="col">Title</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Teacher</th>
-                    <th scope="col">Enrolled On</th>
-                    <th scope="col">Amount Paid</th>
-                    <th scope="col">Details</th>
-                    <th scope="col">Review</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var enrollment in Model)
-                {
-                    <tr>
-                        <td>@enrollment.Title</td>
-                        <td>@enrollment.Description</td>
-                        <td>@enrollment.Teacher</td>
-                        <td>@enrollment.EnrollDate.ToString("MM/dd/yyyy")</td>
-                        <td>$@enrollment.Amount</td>
-                        <td>
-                            <a asp-action="Details" asp-route-id="@enrollment.CourseId" class="btn btn-info text-white">Details</a>
-                        </td>
-                        <td>
-                            <a asp-action="Review" asp-route-id="@enrollment.CourseId" class="btn btn-primary">Add Review</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
- *@
-
- @model IEnumerable<MyEnrollmentViewModel>
+﻿ @model IEnumerable<MyEnrollmentViewModel>
 
 @{
     ViewData["Title"] = "My Enrollments";
@@ -90,7 +38,7 @@
                                 <td>@enrollment.Description</td>
                                 <td>@enrollment.Teacher</td>
                                 <td>@enrollment.EnrollDate.ToString("MM/dd/yyyy")</td>
-                                <td>$@enrollment.Amount</td>
+                                <td>₹@enrollment.Amount</td>
                                 <td class="text-center">
                                     <a asp-action="Details" asp-route-id="@enrollment.CourseId" class="btn btn-success btn-sm" data-toggle="tooltip" title="View Course Details">
                                         Details
