@@ -30,16 +30,13 @@
                     </div>
                     <div class="card-body">
 
-                        <!-- Spinner -->
-                        <div id="spinner" class="d-flex justify-content-center mb-3">
-                            <div class="spinner-border text-primary" role="status"></div>
+                        <div  class="d-flex justify-content-center mb-3">
+                            <div id="spinner" class="spinner-border text-primary" role="status"></div>
                         </div>
 
-                        <!-- Stripe card element -->
                         <div id="card-element" class="p-3" style="border: 1px solid #ced4da; border-radius: 5px; display: none;">
-                            <!-- Stripe card element will be inserted here -->
                         </div>
-                        <small class="form-text text-muted mt-2">Your payment information is securely processed.</small>
+                        <small class="form-text text-muted mt-2">Your payment information will secured.</small>
                     </div>
                 </div>
 
@@ -76,8 +73,8 @@
         spinner.style.display = 'block';
         payButton.disabled = true;
 
-        cardElement.mount('#card-element');
-
+        // Mount the card element and handle readiness
+        cardElement.mount(cardElementContainer);
         cardElement.on('ready', function () {
             // Hide spinner and show card element when it's ready
             cardElementContainer.style.display = 'block';
@@ -85,21 +82,35 @@
             payButton.disabled = false;
         });
 
+        // Handle errors from card element
+        cardElement.on('change', function (event) {
+            if (event.error) {
+                // Display the error message if any
+                document.getElementById('payment-response').innerText = event.error.message;
+            }
+        });
+
         const paymentForm = document.getElementById('enrollment-form');
         paymentForm.addEventListener('submit', async (event) => {
-            event.preventDefault(); 
+            event.preventDefault(); // Prevent the default form submission
 
             payButton.disabled = true;
+            spinner.style.display = 'block'; // Show spinner when submitting
 
             const { token, error } = await stripe.createToken(cardElement);
             if (error) {
                 document.getElementById('payment-response').innerText = error.message;
-                payButton.disabled = false; // Re-enable the button if there's an error
+                spinner.style.display = 'none'; // Hide spinner on error
+                payButton.disabled = false; // Re-enable the button
             } else {
                 document.getElementById('stripeToken').value = token.id;
 
-                paymentForm.submit();
+                // Optionally hide the spinner before submitting the form
+                spinner.style.display = 'none';
+                paymentForm.submit(); // Submit the form with the token
             }
         });
     </script>
 }
+
+

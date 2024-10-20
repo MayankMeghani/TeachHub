@@ -65,6 +65,14 @@ namespace TeachHub.Controllers
 
             return View(model);
         }
+        // GET: /Account/Register
+        [HttpGet]
+        public async Task<IActionResult> Register()
+        {
+            await _signInManager.SignOutAsync();
+
+            return View();
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]

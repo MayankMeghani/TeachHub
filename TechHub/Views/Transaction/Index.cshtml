@@ -12,6 +12,7 @@
                             <th scope="col">Course Title</th>
                             <th scope="col">Description</th>
                             <th scope="col">Students Enrolled</th>
+                            <th>Course Status</th>
                             <th scope="col" class="text-center">Actions</th>
                         </tr>
                     </thead>
@@ -30,6 +31,16 @@
                                     <td>@course.Title</td>
                                     <td>@course.Description</td>
                                     <td>@course.StudentCount</td>
+                                    <td>
+                                        @if (course.isActive)
+                                        {
+                                            <span class="text-success fw-bold">Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-danger fw-bold">Inactive</span>
+                                        }
+                                    </td>
                                     <td class="text-center">
                                         <a asp-action="Details" asp-route-id="@course.CourseId" class="btn btn-success btn-sm" data-toggle="tooltip" title="View Course Details">
                                             Details

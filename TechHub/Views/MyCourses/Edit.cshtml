@@ -109,8 +109,18 @@
             <span asp-validation-for="Price" class="text-danger"></span>
         </div>
 
-        <input type="hidden" asp-for="TeacherId" />
+<div class="form-group">
+    <label asp-for="IsActive" class="control-label">Status</label>
+    <select asp-for="IsActive" class="form-control">
+                <option value="">Select status</option>
+        <option value="true">Active</option>
+        <option value="false">Inactive</option>
+    </select>
+    <span asp-validation-for="IsActive" class="text-danger"></span>
+</div>
 
+
+        <input type="hidden" asp-for="TeacherId" />
         <!-- Existing Videos with Preview -->
         <div class="form-group existing-videos">
             <label>Existing Videos</label>
@@ -147,6 +157,3 @@
     </div>
 </div>
 
-@section Scripts {
-    @* @await Html.RenderPartialAsync("_ValidationScriptsPartial"); *@
-}

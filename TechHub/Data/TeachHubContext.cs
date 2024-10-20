@@ -17,7 +17,6 @@ namespace TeachHub.Data
         public DbSet<Learner> Learners { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; } 
         public DbSet<Review> Reviews { get; set; }
-        //public DbSet<User> Users { get; set; }
         public DbSet<Video> Videos { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -48,8 +47,13 @@ namespace TeachHub.Data
                 .HasMany<Review>(c => c.Reviews)
                 .WithOne(r => r.Course)
                 .HasForeignKey(r => r.CourseId)
-                .OnDelete(DeleteBehavior.Cascade);  
-
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Course>()
+                .Property(c => c.Rating)
+                .HasDefaultValue(0); 
+            modelBuilder.Entity<Course>()
+                .Property(c => c.IsActive)
+                .HasDefaultValue(true);
             modelBuilder.Entity<Review>()
                 .HasKey(r => r.ReviewId);  // Primary key
 

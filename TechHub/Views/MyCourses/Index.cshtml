@@ -28,6 +28,7 @@
                             <th>@Html.DisplayNameFor(model => model.Description)</th>
                             <th>@Html.DisplayNameFor(model => model.Price)</th>
                             <th>@Html.DisplayNameFor(model => model.CreatedAt)</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -39,8 +40,17 @@
                                 <td>@Html.DisplayFor(modelItem => item.Description)</td>
                                 <td>₹@Html.DisplayFor(modelItem => item.Price)</td>
                                 <td>@Html.DisplayFor(modelItem => item.CreatedAt)</td>
+                                <td>
+                                    @if (item.IsActive)
+                                    {
+                                        <span class="text-success fw-bold">Active</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-danger fw-bold">Inactive</span>
+                                    }
+                                </td>
                                 <td class="text-center">
-                                    <!-- Center the actions here -->
                                     <a asp-action="Edit" asp-route-id="@item.CourseId" class="btn btn-warning btn-sm mx-1">Edit</a>
                                     <a asp-action="Details" asp-route-id="@item.CourseId" class="btn btn-info btn-sm text-white mx-1">Details</a>
                                     <a asp-action="Delete" asp-route-id="@item.CourseId" class="btn btn-danger btn-sm mx-1">Delete</a>

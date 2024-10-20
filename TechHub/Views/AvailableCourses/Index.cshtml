@@ -7,6 +7,13 @@
 <div class="container mt-5">
     <h1 class="mb-4 text-center font-weight-bold">Course List</h1>
 
+    <form method="get" asp-action="Index">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" name="searchTerm" placeholder="Search by course title or teacher name" value="@ViewData["SearchTerm"]" aria-label="Search" />
+            <button class="btn btn-outline-secondary" type="submit">Search</button>
+        </div>
+    </form>
+
     <div class="card shadow-lg" style="border-radius: 12px;">
         <div class="card-body">
             <table class="table table-striped table-hover">
@@ -61,40 +68,5 @@
 }
 
 <style>
-    body {
-        background-color: #f8f9fa; /* Light background for contrast */
-    }
-
-    .card {
-        background: white; /* White background for the card */
-    }
-
-    .table th {
-        background-color: #343a40; /* Dark header for contrast */
-        color: white; /* White text for headers */
-    }
-
-    .table-striped tbody tr:nth-of-type(odd) {
-        background-color: #f2f2f2; /* Light gray for odd rows */
-    }
-
-    .table-row:hover {
-        background-color: #e0e0e0; /* Gray background on hover */
-    }
-
-    .btn-success {
-        background-color: #28a745; /* Green background */
-        border-color: #28a745; /* Green border */
-        color: white; /* White text */
-        transition: background-color 0.3s, border-color 0.3s; /* Smooth transitions */
-    }
-
-        .btn-success:hover {
-            background-color: #218838; /* Darker green on hover */
-            border-color: #1e7e34; /* Darker green border on hover */
-        }
-
-        .btn-success:focus {
-            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5); /* Add focus shadow for accessibility */
-        }
+    /* Styles here */
 </style>

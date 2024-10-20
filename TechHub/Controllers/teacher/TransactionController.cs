@@ -28,27 +28,27 @@ namespace TeachHub.Controllers.teacher
         {
             var user = await _userManager.GetUserAsync(User);
             var coursesWithEnrollments = await _context.Courses
-    .Where(c => c.TeacherId == user.Id) // Fetch courses created by the teacher
-    .GroupJoin(
+            .Where(c => c.TeacherId == user.Id) 
+            .GroupJoin(
         _context.Enrollments,
         course => course.CourseId,
         enrollment => enrollment.CourseId,
         (course, enrollments) => new
         {
             Course = course,
-            StudentCount = enrollments.Count() // Count enrollments for each course
+            StudentCount = enrollments.Count() 
         }
     )
     .ToListAsync();
 
 
-            // Pass the result to the view (you'll need to create a ViewModel for this)
             var viewModel = coursesWithEnrollments.Select(c => new CourseEnrollmentViewModel
             {
                 CourseId = c.Course.CourseId,
                 Title = c.Course.Title,
                 Description = c.Course.Description,
-                StudentCount = c.StudentCount
+                StudentCount = c.StudentCount,
+                isActive = c.Course.IsActive
             }).ToList();
 
             return View(viewModel);

@@ -87,6 +87,7 @@ namespace TeachHub.Controllers.Teachers
             {
                 TeacherId = user.Id,
                 CreatedAt = DateTime.Now,
+                IsActive = true
             };
 
             // Return the Create view
@@ -208,11 +209,10 @@ namespace TeachHub.Controllers.Teachers
                 return NotFound();
             }
 
-
             var course = await _context.Courses
                           .Include(c => c.Videos)  // Include existing videos
                           .FirstOrDefaultAsync(c => c.CourseId == id);
-            if (course == null || course.TeacherId != _userManager.GetUserId(User)) // Check if the course belongs to the logged-in teacher
+            if (course == null || course.TeacherId != _userManager.GetUserId(User))
             {
                 return NotFound();
             }
@@ -223,7 +223,7 @@ namespace TeachHub.Controllers.Teachers
         // POST: MyCourses/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CourseId,Title,Description,Price,CreatedAt,TeacherId")] Course course, List<IFormFile> videoFiles, List<int> videoIdsToRemove)
+        public async Task<IActionResult> Edit(int id, [Bind("CourseId,Title,Description,Price,IsActive,CreatedAt,TeacherId")] Course course, List<IFormFile> videoFiles, List<int> videoIdsToRemove)
         {
             if (id != course.CourseId)
             {
@@ -237,9 +237,9 @@ namespace TeachHub.Controllers.Teachers
             {
                 ModelState.AddModelError("Title", "A course with the same title already exists.");
                 var courseWithVideos = await _context.Courses
-                    .Include(c => c.Videos)  // Ensure we include videos in case of validation error
+                    .Include(c => c.Videos)
                     .FirstOrDefaultAsync(c => c.CourseId == id);
-                    return View(courseWithVideos);
+                return View(courseWithVideos);
             }
 
             if (ModelState.IsValid)
@@ -255,7 +255,6 @@ namespace TeachHub.Controllers.Teachers
                         _context.Videos.RemoveRange(videosToDelete);
                         await _context.SaveChangesAsync();
                     }
-
 
                     foreach (var file in videoFiles)
                     {
@@ -294,12 +293,14 @@ namespace TeachHub.Controllers.Teachers
                         throw;
                     }
                 }
+
                 TempData["SuccessMessage"] = "Course updated successfully!";
                 return RedirectToAction(nameof(Index));
             }
 
             return View(course);
         }
+
 
 
         // GET: MyCourses/Delete/5
@@ -313,8 +314,6 @@ namespace TeachHub.Controllers.Teachers
             var course = await _context.Courses
                 .Include(c => c.Teacher)
                 .FirstOrDefaultAsync(m => m.CourseId == id);
-
-            // Check ownership
             if (course == null || course.TeacherId != _userManager.GetUserId(User))
             {
                 return NotFound();
@@ -328,20 +327,36 @@ namespace TeachHub.Controllers.Teachers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var course = await _context.Courses.FindAsync(id);
-            if (course != null && course.TeacherId == _userManager.GetUserId(User)) 
+            // Find the course by ID and include its enrollments to check if any exist
+            var course = await _context.Courses
+                .Include(c => c.Enrollments) // Include enrollments to check if any students are enrolled
+                .FirstOrDefaultAsync(c => c.CourseId == id);
+
+            // Check if the course exists and if the current user is the teacher of the course
+            if (course != null && course.TeacherId == _userManager.GetUserId(User))
             {
+                // If there are any enrollments, restrict deletion
+                if (course.Enrollments.Any())
+                {
+                    // Prevent deletion and prompt the teacher to deactivate the course instead
+                    TempData["ErrorMessage"] = "Cannot delete this course because students are enrolled. You can deactivate it instead.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                // If no enrollments exist, allow deletion
                 _context.Courses.Remove(course);
+                await _context.SaveChangesAsync();
+
                 TempData["SuccessMessage"] = "Course deleted successfully!";
             }
             else
             {
-                TempData["ErrorMessage"] = "Failed to delete the course.";
+                // If the course doesn't exist or the teacher is not the owner, show an error message
+                TempData["ErrorMessage"] = "Failed to delete the course. Either the course doesn't exist or you don't have permission to delete it.";
             }
-
-            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
+
     }
 }

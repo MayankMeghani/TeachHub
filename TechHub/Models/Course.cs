@@ -4,25 +4,29 @@ namespace TeachHub.Models
 {
     public class Course
     {
-        public int CourseId { get; set; }  // Primary Key
+        public int CourseId { get; set; }  
         [Required]
-        public string Title { get; set; }   // Title of the course
+        public string Title { get; set; }   
         [Required]
-        public string Description { get; set; } // Description of the course
+        public string Description { get; set; } 
 
         [Required] 
         public float Price { get; set; }
         [Required]
-        public DateTime CreatedAt { get; set; } // Date when the course was created
+        public DateTime CreatedAt { get; set; } 
 
-        public string TeacherId { get; set; } // Foreign Key for the Instructor
-        public Teacher? Teacher { get; set; } // Navigation property
+        public string TeacherId { get; set; } 
+        public Teacher? Teacher { get; set; }
         
-        public IEnumerable<Review>? Reviews { get; set; } // Navigation property for Reviews
+        public IEnumerable<Review>? Reviews { get; set; } 
         
         public IEnumerable<Enrollment> ?Enrollments { get; set; }
 
-        public IEnumerable<Video>? Videos { get; set; } // Navigation property for Videos
+        public IEnumerable<Video>? Videos { get; set; }
+        public bool IsActive { get; set; } = true; 
+
+        public int Rating { get; set; }
+
 
 
     }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 using TeachHub.Data;
 using TeachHub.Models;
 using TeachHub.Services;
@@ -31,27 +32,48 @@ namespace TeachHub.Controllers.learner
         }
 
         // GET: AvailableCourses
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchTerm)
         {
             var user = await _userManager.GetUserAsync(User);
-            var availableCourses = await _context.Courses
-         .Include(c => c.Teacher) // Include the related Teacher entity
-         .GroupJoin(
-             _context.Enrollments.Where(e => e.LearnerId == user.Id), // Filter enrollments by current user
-             course => course.CourseId,
-             enrollment => enrollment.CourseId,
-             (course, enrollments) => new
-             {
-                 Course = course,
-                 IsEnrolled = enrollments.Any() // Check if the user is enrolled in the course
-             }
-         )
-         .Where(c => !c.IsEnrolled) // Only fetch courses where the user is not enrolled
-         .Select(c => c.Course) // Select the course objects
-         .ToListAsync();
 
-            return View(availableCourses);
+            // Check if the user is logged in
+            if (user == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            // Fetch available courses (that the user is not enrolled in)
+            var availableCoursesQuery = _context.Courses
+                .Include(c => c.Teacher) // Include related Teacher entity
+                .GroupJoin(
+                    _context.Enrollments.Where(e => e.LearnerId == user.Id), // Get only enrollments by this user
+                    course => course.CourseId,
+                    enrollment => enrollment.CourseId,
+                    (course, enrollments) => new
+                    {
+                        Course = course,
+                        IsEnrolled = enrollments.Any() // Determine if the user is enrolled
+                    }
+                )
+                .Where(c => !c.IsEnrolled); // Filter out courses where the user is already enrolled
+
+            // If a search term is provided, filter the courses
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                availableCoursesQuery = availableCoursesQuery.Where(c =>
+                    c.Course.Title.Contains(searchTerm) ||
+                    (c.Course.Teacher != null && c.Course.Teacher.Name.Contains(searchTerm))
+                );
+            }
+
+            // Select the course objects
+            var availableCourses = await availableCoursesQuery
+                .Select(c => c.Course)
+                .ToListAsync();
+
+            return View(availableCourses); // Pass the available courses to the view
         }
+
 
         // GET: AvailableCourses/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -89,7 +111,13 @@ namespace TeachHub.Controllers.learner
             }
 
 
-            ViewBag.Course = _context.Courses.Find(CourseId);
+             var course = _context.Courses.Find(CourseId);
+            if (!course.IsActive)
+            {
+                TempData["ErrorMessage"] = "This course is currently inactive and not open for new enrollments.";
+                return RedirectToAction("Details", new { id = CourseId });
+            }
+            ViewBag.Course = course;
             ViewBag.LearnerId = user.Id;
             ViewBag.StripePublishableKey = _configuration["Stripe:PublishableKey"];
 
