@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,8 @@ using TeachHub.ViewModels;
 
 namespace TeachHub.Controllers.teacher
 {
+
+    [Authorize]
     public class TransactionController : Controller
     {
         private readonly TeachHubContext _context;

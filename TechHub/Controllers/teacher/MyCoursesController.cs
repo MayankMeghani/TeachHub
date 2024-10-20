@@ -5,10 +5,13 @@ using Microsoft.EntityFrameworkCore;
 using TeachHub.Data;
 using TeachHub.Models;
 using TeachHub.Services;
-using Microsoft.AspNetCore.Identity; 
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TeachHub.Controllers.Teachers
 {
+
+    [Authorize]
     public class MyCoursesController : Controller
     {
         private readonly TeachHubContext _context;

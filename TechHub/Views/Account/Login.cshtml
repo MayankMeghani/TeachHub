@@ -52,8 +52,13 @@
 
  <div class="login-container">
      <h2>Login</h2>
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-warning">
+            @TempData["Message"]
+        </div>
+    }
 
-     <!-- Display general errors -->
      @if (!ViewData.ModelState.IsValid)
      {
          <div class="text-danger">
@@ -63,7 +68,6 @@
              }
          </div>
      }
-
      <form asp-action="Login" method="post">
          <div class="form-group">
              <label asp-for="Email"></label>

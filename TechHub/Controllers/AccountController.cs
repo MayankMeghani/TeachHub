@@ -27,9 +27,13 @@ namespace TeachHub.Controllers
 
         // GET: /Account/Login
         [HttpGet]
-        public async Task<IActionResult> Login()
+        public async Task<IActionResult> Login(string message = null)
         {
             await _signInManager.SignOutAsync();
+            if (!string.IsNullOrEmpty(message))
+            {
+                TempData["Message"] = message;
+            }
             return View();
         }
 

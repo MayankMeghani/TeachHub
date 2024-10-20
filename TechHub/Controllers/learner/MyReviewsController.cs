@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,6 +12,8 @@ using TeachHub.Models;
 
 namespace TeachHub.Controllers.learner
 {
+
+    [Authorize]
     public class MyReviewsController : Controller
     {
         private readonly TeachHubContext _context;

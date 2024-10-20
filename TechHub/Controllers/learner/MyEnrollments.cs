@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,8 @@ using TeachHub.ViewModels;
 
 namespace TeachHub.Controllers.learner
 {
+
+    [Authorize]
     public class MyEnrollments : Controller
     {
         private readonly TeachHubContext _context;
