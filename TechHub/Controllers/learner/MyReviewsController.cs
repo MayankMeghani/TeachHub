@@ -73,8 +73,6 @@ namespace TeachHub.Controllers.learner
             {
                 return NotFound();
             }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "CourseId", "Description", review.CourseId);
-            ViewData["LearnerId"] = new SelectList(_context.Learners, "LearnerId", "LearnerId", review.LearnerId);
             return View(review);
         }
 
@@ -95,7 +93,8 @@ namespace TeachHub.Controllers.learner
                 try
                 {
                     _context.Update(review);
-                    await _context.SaveChangesAsync(); 
+                    await _context.SaveChangesAsync();
+                    await UpdateCourseRating(review.CourseId);
                     TempData["SuccessMessage"] = "Review updated successfully!";
 
                 }
@@ -145,7 +144,9 @@ namespace TeachHub.Controllers.learner
             var review = await _context.Reviews.FindAsync(id);
             if (review != null)
             {
-                _context.Reviews.Remove(review); 
+                _context.Reviews.Remove(review);
+                await UpdateCourseRating(review.CourseId);
+
                 TempData["SuccessMessage"] = "Review deleted successfully!";
 
             }
@@ -158,5 +159,24 @@ namespace TeachHub.Controllers.learner
         {
             return _context.Reviews.Any(e => e.ReviewId == id);
         }
+
+        public async Task UpdateCourseRating(int courseId)
+        {
+            var reviews = await _context.Reviews
+                .Where(r => r.CourseId == courseId)
+                .ToListAsync();
+
+            if (reviews.Any())
+            {
+                var averageRating = reviews.Average(r => r.Rating);
+                var course = await _context.Courses.FindAsync(courseId);
+
+                // Explicitly convert averageRating (double) to float
+                course.Rating = Convert.ToSingle(averageRating); // or course.Rating = (float)averageRating;
+
+                await _context.SaveChangesAsync();
+            }
+        }
+
     }
 }

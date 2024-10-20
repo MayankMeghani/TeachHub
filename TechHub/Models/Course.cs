@@ -25,7 +25,7 @@ namespace TeachHub.Models
         public IEnumerable<Video>? Videos { get; set; }
         public bool IsActive { get; set; } = true; 
 
-        public int Rating { get; set; }
+        public float Rating { get; set; }
 
 
 

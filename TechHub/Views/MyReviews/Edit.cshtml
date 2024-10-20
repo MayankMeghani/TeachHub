@@ -14,26 +14,26 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
-    .edit-review-container h1, .edit-review-container h4 {
-        text-align: center;
-        margin-bottom: 20px;
-        color: #333;
-    }
+        .edit-review-container h1, .edit-review-container h4 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
 
     .form-group {
         position: relative;
         margin-bottom: 15px;
     }
 
-    .form-group label {
-        position: absolute;
-        top: -10px;
-        left: 10px;
-        font-size: 12px;
-        background: #f9f9f9;
-        padding: 0 5px;
-        color: #333;
-    }
+        .form-group label {
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            font-size: 12px;
+            background: #f9f9f9;
+            padding: 0 5px;
+            color: #333;
+        }
 
     .form-control {
         border: 1px solid #ccc;
@@ -57,6 +57,22 @@
         text-align: center;
         margin-top: 20px;
     }
+
+    .rating {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 15px;
+    }
+
+    .star {
+        font-size: 30px;
+        color: #ccc;
+        cursor: pointer;
+    }
+
+        .star.checked {
+            color: gold;
+        }
 </style>
 
 <div class="edit-review-container">
@@ -81,8 +97,15 @@
         </div>
 
         <div class="form-group">
-            <label asp-for="Rating" class="control-label">Rating</label>
-            <input asp-for="Rating" class="form-control" placeholder="Rate (1-5)" required />
+            <label class="control-label">Rating</label>
+            <div class="rating">
+                <span class="star" data-value="1">&#9733;</span>
+                <span class="star" data-value="2">&#9733;</span>
+                <span class="star" data-value="3">&#9733;</span>
+                <span class="star" data-value="4">&#9733;</span>
+                <span class="star" data-value="5">&#9733;</span>
+            </div>
+            <input type="hidden" asp-for="Rating" id="Rating" value="@Model.Rating" />
             <span asp-validation-for="Rating" class="text-danger"></span>
         </div>
 
@@ -93,9 +116,34 @@
     <div class="back-link">
         <a asp-action="Index" class="btn btn-secondary">← Back to List</a>
     </div>
-
 </div>
 
 @section Scripts {
-    @* @await Html.RenderPartialAsync("_ValidationScriptsPartial"); *@
+    <script>
+        const stars = document.querySelectorAll('.star');
+        const ratingInput = document.getElementById('Rating');
+        const currentRating = parseInt(ratingInput.value);
+
+        // Set the initial star rating based on the model's rating
+        stars.forEach((star, index) => {
+            if (index < currentRating) {
+                star.classList.add('checked');
+            }
+
+            star.addEventListener('click', function () {
+                const rating = this.getAttribute('data-value');
+
+                // Clear previous selections
+                stars.forEach(s => s.classList.remove('checked'));
+
+                // Highlight the selected stars
+                for (let i = 0; i < rating; i++) {
+                    stars[i].classList.add('checked');
+                }
+
+                // Set the hidden input value to the selected rating
+                ratingInput.value = rating;
+            });
+        });
+    </script>
 }

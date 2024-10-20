@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TeachHub.Data;
 
@@ -11,9 +12,11 @@ using TeachHub.Data;
 namespace TeachHub.Migrations
 {
     [DbContext(typeof(TeachHubContext))]
-    partial class TeachHubContextModelSnapshot : ModelSnapshot
+    [Migration("20241020114724_rating1")]
+    partial class rating1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

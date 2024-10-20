@@ -1,8 +1,7 @@
-﻿  @model TeachHub.Models.Course
+﻿@model TeachHub.Models.Course
 @{
     ViewData["Title"] = "Details";
 }
-
 <div class="container my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="display-4">@ViewData["Title"]</h1>
@@ -35,19 +34,65 @@
 
                 <dt class="col-sm-2 fw-bold">@Html.DisplayNameFor(model => model.Teacher)</dt>
                 <dd class="col-sm-10">@Html.DisplayFor(model => model.Teacher.Name)</dd>
+
+                <dt class="col-sm-2 fw-bold">Rating</dt>
+                <dd class="col-sm-10">
+                    @{
+                        var rating = Model.Rating;
+                        var fullStars = (int)Math.Floor(rating);
+                        var halfStar = (rating - fullStars) >= 0.5;
+                        var emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+                    }
+                    @* Render stars *@
+                    @for (var i = 0; i < fullStars; i++)
+                    {
+                        <span class="text-warning">&#9733;</span>
+                    }
+                    @if (halfStar)
+                    {
+                        <span class="text-warning">&#9734;</span>
+                    }
+                    @for (var i = 0; i < emptyStars; i++)
+                    {
+                        <span class="text-secondary">&#9734;</span>
+                    }
+                    <span class="text-muted">(@Model.Rating.ToString("0.0"))</span>
+                </dd>
             </dl>
         </div>
+
+        <!-- Enroll Button -->
+        <div class="my-4 text-center">
+            <form asp-action="Enroll" method="get" class="d-inline">
+                <input type="hidden" name="courseId" value="@Model.CourseId" />
+                <button type="submit" class="btn btn-primary btn-lg">Enroll Now</button>
+            </form>
+        </div>
+
+        <div class="text-center">
+            <a asp-action="Index" class="btn btn-secondary btn-lg">Back to List</a>
+        </div>
+        <h4 class="mt-5">Course Reviews</h4>
+        <hr />
+        @if (Model.Reviews != null && Model.Reviews.Any())
+        {
+            <div class="review-list">
+                @foreach (var review in Model.Reviews)
+                {
+                    <div class="review-list-item border-bottom mb-3 pb-3">
+                        <strong>@review.Learner?.Name</strong>
+                        <span class="float-end text-muted">@review.CreatedAt.ToString("yyyy-MM-dd HH:mm")</span>
+                        <br />
+                        <span class="review-rating badge bg-warning">@review.Rating/5 ★</span>
+                        <p class="mt-2">@review.Content</p>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p class="no-content">No reviews available for this course.</p>
+        }
     </div>
 
-    <!-- Enroll Button -->
-    <div class="my-4 text-center">
-        <form asp-action="Enroll" method="get" class="d-inline">
-            <input type="hidden" name="courseId" value="@Model.CourseId" />
-            <button type="submit" class="btn btn-primary btn-lg">Enroll Now</button>
-        </form>
-    </div>
-
-    <div class="text-center">
-        <a asp-action="Index" class="btn btn-secondary btn-lg">Back to List</a>
-    </div>
 </div>

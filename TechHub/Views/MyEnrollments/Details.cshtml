@@ -17,18 +17,44 @@
 
                 <dt class="col-sm-3 fw-bold">Description:</dt>
                 <dd class="col-sm-9 fs-5">@Html.DisplayFor(model => model.Description)</dd>
-                
+
                 <dt class="col-sm-3 fw-bold">Status:</dt>
                 <dd class="col-sm-9 fs-5">
                     @(Model.IsActive ? "Active" : "Inactive")
                 </dd>
-
 
                 <dt class="col-sm-3 fw-bold">Created At:</dt>
                 <dd class="col-sm-9 fs-5">@Html.DisplayFor(model => model.CreatedAt)</dd>
 
                 <dt class="col-sm-3 fw-bold">Teacher:</dt>
                 <dd class="col-sm-9 fs-5">@Html.DisplayFor(model => model.Teacher.Name)</dd>
+
+                <dt class="col-sm-3 fw-bold">Rating:</dt>
+                <dd class="col-sm-9 fs-5">
+                    @* Display star rating *@
+                    @{
+                        var rating = Model.Rating; // Assuming rating is a float or double
+                        var fullStars = (int)Math.Floor(rating); // Full stars based on the integer part of rating
+                        var halfStar = (rating - fullStars) >= 0.5 ? true : false; // Check for half star
+                        var emptyStars = 5 - fullStars - (halfStar ? 1 : 0); // Remaining stars
+                    }
+                    @* Render full stars *@
+                    @for (var i = 0; i < fullStars; i++)
+                    {
+                        <span class="text-warning">&#9733;</span> @* Full star *@
+                    }
+                    @* Render half star if applicable *@
+                    @if (halfStar)
+                    {
+                    <span class="text-warning">&#9734;</span> @* Half star *@
+                    }
+                    @* Render empty stars *@
+                    @for (var i = 0; i < emptyStars; i++)
+                    {
+                        <span class="text-secondary">&#9734;</span> @* Empty star *@
+                    }
+                    <span class="text-muted">(@Model.Rating.ToString("0.0"))</span> @* Show numeric rating *@
+                </dd>
             </dl>
         </div>
     </div>
@@ -93,8 +119,8 @@
     <div class="d-flex justify-content-between mb-4">
         <a asp-action="Index" class="btn btn-secondary">Back to List</a>
         @* <form asp-action="Enroll" method="get">
-            <input type="hidden" name="courseId" value="@Model.CourseId" />
-            <button type="submit" class="btn btn-success">Enroll Now</button>
+        <input type="hidden" name="courseId" value="@Model.CourseId" />
+        <button type="submit" class="btn btn-success">Enroll Now</button>
         </form> *@
     </div>
 </div>

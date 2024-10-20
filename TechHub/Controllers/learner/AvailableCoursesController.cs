@@ -84,8 +84,11 @@ namespace TeachHub.Controllers.learner
             }
 
             var course = await _context.Courses
-                .Include(c => c.Teacher)
+                .Include(c => c.Teacher) // Include the related Teacher entity
+                .Include(c => c.Reviews) // Include related Reviews
+                    .ThenInclude(r => r.Learner) // Include the Learner associated with each Review
                 .FirstOrDefaultAsync(m => m.CourseId == id);
+
             if (course == null)
             {
                 return NotFound();
@@ -93,7 +96,6 @@ namespace TeachHub.Controllers.learner
 
             return View(course);
         }
-
         // GET: AvailableCourses/Enroll
         public async Task<IActionResult> Enroll(int CourseId)
         {

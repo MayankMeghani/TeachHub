@@ -104,12 +104,28 @@ namespace TeachHub.Controllers.learner
             {
                 _context.Add(review);
                 await _context.SaveChangesAsync();
+                await UpdateCourseRating(review.CourseId);
                 TempData["SuccessMessage"] = "Review Added successfully!";
 
                 return RedirectToAction(nameof(Index));
             }
 
             return View(review);
+        }
+
+        public async Task UpdateCourseRating(int courseId)
+        {
+            var reviews = await _context.Reviews
+                .Where(r => r.CourseId == courseId)
+                .ToListAsync();
+
+            if (reviews.Any())
+            {
+                var averageRating = reviews.Average(r => r.Rating);
+                var course = await _context.Courses.FindAsync(courseId);
+                course.Rating = Convert.ToSingle(averageRating); // or course.Rating = (float)averageRating;
+                await _context.SaveChangesAsync();
+            }
         }
 
     }

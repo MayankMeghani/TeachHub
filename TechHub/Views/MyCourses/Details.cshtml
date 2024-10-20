@@ -108,8 +108,34 @@
         <h2>@Model.Title</h2>
         <p><strong>Description:</strong> @Model.Description</p>
         <p><strong>Price:</strong> @Model.Price</p>
+
+        <dt class="col-sm-3 fw-bold">Rating:</dt>
+        <dd class="col-sm-9 fs-5">
+            @* Display star rating *@
+            @{
+                var rating = Model.Rating; // Assuming rating is a float or double
+                var fullStars = (int)Math.Floor(rating); // Full stars based on the integer part of rating
+                var halfStar = (rating - fullStars) >= 0.5 ? true : false; // Check for half star
+                var emptyStars = 5 - fullStars - (halfStar ? 1 : 0); // Remaining stars
+            }
+            @* Render full stars *@
+            @for (var i = 0; i < fullStars; i++)
+            {
+                <span class="text-warning">&#9733;</span> @* Full star *@
+            }
+            @* Render half star if applicable *@
+            @if (halfStar)
+            {
+                <span class="text-warning">&#9734;</span> @* Half star *@
+            }
+            @* Render empty stars *@
+            @for (var i = 0; i < emptyStars; i++)
+            {
+                <span class="text-secondary">&#9734;</span> @* Empty star *@
+            }
+            <span class="text-muted">(@Model.Rating.ToString("0.0"))</span> @* Show numeric rating *@
+        </dd>
         <p><strong>Created At:</strong> @Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</p>
-        <p><strong>Teacher:</strong> @Model.Teacher.Name</p>
         <p class="course-status @(Model.IsActive ? "active" : "inactive")">
             <strong>Status:</strong> @(Model.IsActive ? "Active" : "Inactive")
         </p>

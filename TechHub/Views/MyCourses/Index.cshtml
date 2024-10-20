@@ -27,6 +27,7 @@
                             <th>@Html.DisplayNameFor(model => model.Title)</th>
                             <th>@Html.DisplayNameFor(model => model.Description)</th>
                             <th>@Html.DisplayNameFor(model => model.Price)</th>
+                            <th>@Html.DisplayNameFor(model => model.Rating)</th>
                             <th>@Html.DisplayNameFor(model => model.CreatedAt)</th>
                             <th>Status</th>
                             <th>Actions</th>
@@ -39,6 +40,7 @@
                                 <td class="fw-bold">@Html.DisplayFor(modelItem => item.Title)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Description)</td>
                                 <td>₹@Html.DisplayFor(modelItem => item.Price)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Rating)</td>
                                 <td>@Html.DisplayFor(modelItem => item.CreatedAt)</td>
                                 <td>
                                     @if (item.IsActive)
