@@ -68,10 +68,8 @@ namespace TeachHub.Controllers.Teachers
         // GET: MyCourses/Create
         public async Task<IActionResult> Create()
         {
-            // Get the currently logged-in user
             var user = await _userManager.GetUserAsync(User);
 
-            // Check if the user's profile is complete
             if (user == null || !user.IsProfileComplete)
             {
                 // Add an error message to TempData
@@ -82,11 +80,11 @@ namespace TeachHub.Controllers.Teachers
                 return RedirectToAction("Index"); 
             }
 
-            // Create a new course object
             var course = new Course
             {
                 TeacherId = user.Id,
                 CreatedAt = DateTime.Now,
+                Rating =0 ,
                 IsActive = true
             };
 
@@ -97,23 +95,21 @@ namespace TeachHub.Controllers.Teachers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CourseId,Title,Description,Price,CreatedAt,TeacherId")] Course course, List<IFormFile> videoFiles)
+        public async Task<IActionResult> Create([Bind("CourseId,Title,Description,Price,Rating,CreatedAt,TeacherId")] Course course, List<IFormFile> videoFiles)
         {
-            // Check if a course with the same title exists for the teacher
             var existingCourse = await _context.Courses
                 .FirstOrDefaultAsync(c => c.Title == course.Title && c.TeacherId == course.TeacherId);
 
             if (existingCourse != null)
             {
                 ModelState.AddModelError("Title", "A course with the same title already exists.");
-                return View(course); // Return to view if duplicate course exists
+                return View(course); 
             }
 
-            // Ensure at least one video is uploaded
             if (videoFiles == null || !videoFiles.Any())
             {
                 ModelState.AddModelError("", "Please upload at least one video.");
-                return View(course); // Return to view if no video is uploaded
+                return View(course); 
             }
 
             if (ModelState.IsValid)
@@ -223,7 +219,7 @@ namespace TeachHub.Controllers.Teachers
         // POST: MyCourses/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CourseId,Title,Description,Price,IsActive,CreatedAt,TeacherId")] Course course, List<IFormFile> videoFiles, List<int> videoIdsToRemove)
+        public async Task<IActionResult> Edit(int id, [Bind("CourseId,Title,Description,Price,Rating,IsActive,CreatedAt,TeacherId")] Course course, List<IFormFile> videoFiles, List<int> videoIdsToRemove)
         {
             if (id != course.CourseId)
             {
