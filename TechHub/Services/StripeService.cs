@@ -17,7 +17,6 @@ namespace TeachHub.Services
 
         public async Task<string> CreateCharge(string token, float amount)
         {
-            // Simulate a charge in test mode
             await Task.Delay(500); // Simulate API call delay
             return $"test_ch_{Guid.NewGuid().ToString("N")}";
         }
